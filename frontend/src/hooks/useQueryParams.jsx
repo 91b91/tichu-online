@@ -6,10 +6,13 @@ export function useQueryParams() {
 
   const queryParams = new URLSearchParams(location.search);
 
+  // Get the base URL (everything before the query params)
+  const baseUrl = `${window.location.origin}${location.pathname}`;
+
   function setQueryParams(params) {
     const newQuery = new URLSearchParams(params).toString();
     navigate(`?${newQuery}`);
   }
 
-  return { queryParams, setQueryParams };
+  return { queryParams, setQueryParams, baseUrl };
 }

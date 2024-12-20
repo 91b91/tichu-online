@@ -2,6 +2,7 @@ import { useSocket } from '../hooks/useSocket';
 import { JoinInput } from './JoinInput'
 import { ChatInput } from './ChatInput'
 import { ChatDisplay } from './ChatDisplay'
+import { RoomLink } from './RoomLink'
 import { useState, useEffect } from 'react'
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
         setMessage={setMessage} 
         onSendMessage={sendMessage}/>
       <ChatDisplay messages={messages}/>
+      <RoomLink />
     </>
   )
 }
