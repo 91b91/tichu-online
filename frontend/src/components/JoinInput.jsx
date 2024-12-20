@@ -1,5 +1,16 @@
+import { useState, useEffect } from 'react';
+import { useQueryParams } from '../hooks/useQueryParams.jsx';
 
 export function JoinInput({ username, roomName, setUsername, setRoomName, onJoinRoom }) {
+  const [hasJoinedRoom, setHasJoinedRoom] = useState(false);
+  const { queryParams } = useQueryParams();
+
+  useEffect(() => {
+    const room = queryParams.get('room');
+    if (room) {
+      setRoomName(room);
+    }
+  }, [queryParams, setRoomName]);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -11,8 +22,13 @@ export function JoinInput({ username, roomName, setUsername, setRoomName, onJoin
       setRoomName(trimmedRoomName);
       onJoinRoom({ username: trimmedUsername, roomName: trimmedRoomName });
     }
+    setHasJoinedRoom(true);
   }
-  
+
+  if (hasJoinedRoom) {
+    return false;
+  }
+
   return (
     <form onSubmit={handleSubmit}>
       <div>
