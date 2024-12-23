@@ -29,7 +29,7 @@ export function JoinInput() {
       joinRoom({ username: trimmedUsername, roomName: trimmedRoomName });
 
       // Navigate to the RoomPage
-      navigate(`/lobby?room=${trimmedRoomName}`);
+      navigate(`/lobby`);
     } else {
       alert("Both username and room name are required!");
     }
