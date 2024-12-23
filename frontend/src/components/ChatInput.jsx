@@ -1,19 +1,23 @@
-export function ChatInput({ message, setMessage, onSendMessage }) {
+import React, { useState } from "react";
+import { useUser } from "../contexts/UserContext";
+
+export function ChatInput() {
+  const { username, sendMessage } = useUser(); // Access sendMessage from socket
+  const [message, setMessage] = useState("");
 
   function handleSubmit(e) {
     e.preventDefault();
     const trimmedMessage = message.trim();
+
     if (trimmedMessage) {
-      setMessage(trimmedMessage);
-      onSendMessage(trimmedMessage);
+      sendMessage(username, message, '[CHAT]'); // Send message via socket
     }
-    setMessage('');
+    setMessage(""); // Clear input field
   }
-  
+
   return (
     <form onSubmit={handleSubmit}>
       <input
-        id="message"
         type="text"
         placeholder="Your message"
         value={message}
@@ -21,5 +25,5 @@ export function ChatInput({ message, setMessage, onSendMessage }) {
       />
       <button type="submit">Send</button>
     </form>
-  );
+  ); 
 }
