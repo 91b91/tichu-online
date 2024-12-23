@@ -2,6 +2,7 @@ import express from 'express'
 import { Server } from "socket.io"
 
 const PORT = process.env.PORT || 3500;
+const SERVER_MSG_TAG = '[SERVER]';
 
 const app = express();
 
@@ -33,7 +34,7 @@ io.on('connection', socket => {
     const prevRoom = getUser(socket.id)?.room;
     if (prevRoom) {
       socket.leave(prevRoom);
-      io.to(prevRoom).emit('message', `${name} has left the room`)
+      io.to(prevRoom).emit('message', buildMsg(SERVER_MSG_TAG, name, `has left the room`));
     }
 
     // activate the user
@@ -41,8 +42,8 @@ io.on('connection', socket => {
 
     // join room
     socket.join(user.room);
-    io.to(user.room).emit('message', `${name} has joined the room`)
-  });
+    io.to(user.room).emit('message', buildMsg(SERVER_MSG_TAG, name, `has joined the room`));
+    });
 
   socket.on('disconnect', () => {
     // make sure the user state is updated
@@ -75,4 +76,12 @@ function removeUser(id) {
 
 function getUser(id) {
   return UsersState.users.find(user => user.id === id);
+}
+
+function buildMsg(tag, name, text) {
+  return {
+    tag: tag,
+    name: name,
+    text: text,
+  }
 }
