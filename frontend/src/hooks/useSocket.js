@@ -29,11 +29,12 @@ export function useSocket(url) {
     }
   }
 
-  function joinRoom({ username, roomName }) {
+  function joinRoom({ username, userId, roomName}) {
     if (username && roomName) {
       console.log(`User ${username} with id ${socket.id} wants to join ${roomName}`);
       socket.emit('enterRoom', {
         name: username,
+        userId: userId,
         room: roomName
       })
 

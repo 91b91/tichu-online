@@ -29,12 +29,12 @@ const UsersState = {
 io.on('connection', socket => {
   console.log(`User ${socket.id} connected`);
 
-  socket.on('enterRoom', ({ name, room }) => {
-    // leave the previous room - TBD: might not be necessary with later design
+  socket.on('enterRoom', ({ name, userId, room }) => {
+    console.log(`user with uuid: ${userId} wants to join the room ${room}`)
     const prevRoom = getUser(socket.id)?.room;
     if (prevRoom) {
       socket.leave(prevRoom);
-      io.to(prevRoom).emit('message', buildMsg(SERVER_MSG_TAG, name, `has left the room`));
+      io.to(prevRoom).emit('message', buildMsg(SERVER_MSG_TAG, name, 'has left the room'));
     }
 
     // activate the user
@@ -42,7 +42,7 @@ io.on('connection', socket => {
 
     // join room
     socket.join(user.room);
-    io.to(user.room).emit('message', buildMsg(SERVER_MSG_TAG, name, `has joined the room`));
+    io.to(user.room).emit('message', buildMsg(SERVER_MSG_TAG, name, 'has joined the room'));
     });
 
   socket.on('disconnect', () => {
@@ -71,11 +71,15 @@ function addUser(id, name, room) {
 }
 
 function removeUser(id) {
-  return UsersState.users.filter(user => user.id !== id);
+  UsersState.setUsers(UsersState.users.filter(user => user.id !== id));
 }
 
 function getUser(id) {
   return UsersState.users.find(user => user.id === id);
+}
+
+function getUsersInRoom(room) {
+  return UsersState.users.filter(user => user.room === room);
 }
 
 function buildMsg(tag, name, text) {

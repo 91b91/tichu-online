@@ -1,0 +1,123 @@
+/* Global styles for the entire page */
+body {
+  margin: 0; /* Removes default browser margins around the page */
+  padding: 0; 
+  font-family: 'Aptos', sans-serif; /* Sets the default font to Arial (can be changed later) */
+  background-color: #2b2b2b; /* Sets a greyish background color */
+  color: #ffffff; /* Ensures text is white for good contrast against the grey background */
+  display: flex; /* Makes the body a flex container for easier centering */
+  justify-content: center; /* Horizontally centers content inside the body */
+  height: 100vh; /* Ensures the body takes up the full viewport height */
+}
+
+/* Form container */
+.join-form {
+  background-color: #1e1e1e; /* Dark grey background for the form */
+  border-radius: 10px; /* Rounds the corners of the form */
+  margin-top: 60px;
+  padding: 24px; /* Adds spacing inside the form */
+  width: 360px; /* Sets the form width */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Adds a shadow for depth */
+  text-align: center; /* Centers text inside the form */
+  box-shadow: 0 0 70px 2px #C20016; /* Adds the glow effect without changing border size */
+}
+
+/* Form header */
+.join-title {
+  font-size: 1.4rem; /* Makes the title larger than normal text */
+  margin-bottom: 10px; /* Adds space below the title */
+  margin-top: 4px;
+}
+
+.join-subtitle {
+  font-size: 0.9rem; /* Makes the subtitle slightly smaller */
+  color: #b3b3b3; /* A lighter grey for a softer look */
+  margin-bottom: 15px; /* Adds space below the subtitle */
+}
+
+.muted-text {
+  font-size: 0.72rem; /* Small, subtle text */
+  color: #484848; /* Muted grey color */
+  text-align: left; /* Aligns the text to the left */
+  margin-top: 5px; /* Adds some space above the text (optional) */
+}
+
+/* Input fields */
+.input-field {
+  width: 100%;
+  padding: 10px;
+  border: 1.5px solid #444; /* Keeps the border consistent */
+  border-radius: 5px;
+  background-color: #2e2e2e;
+  color: #ffffff;
+  font-size: 1rem;
+  margin-top: 12px;
+  box-sizing: border-box;
+  transition: box-shadow 0.3 ease, border-color 0.2s ease; /* Smooth transition for focus effects */
+}
+
+/* Input focus state */
+.input-field:focus {
+  outline: none; /* Removes the default focus outline */
+  border-color: #C20016; /* Changes the border color to red */
+  box-shadow: 0 0 5px #C20016; /* Adds the glow effect without changing border size */
+}
+
+/* Submit button */
+.submit-button {
+  width: 100%; /* Makes the button the same width as the input fields */
+  padding: 10px; /* Adds internal spacing for better clickability */
+  border: none; /* Removes the default border */
+  border-radius: 5px; /* Rounds the corners for a softer look */
+  background-color: #C20016; /* Bright red background for the button */
+  color: #ffffff; /* White text for contrast */
+  font-size: 1rem; /* Matches the input field text size */
+  cursor: pointer; /* Changes the cursor to a pointer to indicate it's clickable */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effects */
+}
+
+.submit-button:hover {
+  background-color: #A00012; /* Darker red when hovered */
+  box-shadow: 0 0 5px #C20016; /* Optional: Adds a subtle red glow */
+  transform: scale(1.01); /* Slightly enlarges the button for a hover effect */
+}
+
+.submit-button:active {
+  background-color: #A00012; /* Even darker red when clicked */
+  transform: scale(0.99); /* Slightly shrinks the button for a click effect */
+}
+
+/* Input focus state */
+.submit-button:focus {
+  outline: none; /* Removes the default blue outline */
+  box-shadow: 0 0 5px #C20016; /* Optional: Adds a subtle red glow */
+  transform: scale(1.01); /* Slightly enlarges the button for a hover effect */
+}
+
+/* Error message container */
+.error-message {
+  background-color: #eed2cd; /* Light red background */
+  border-radius: 5px; /* Rounded corners */
+  padding: 16px 12px; /* Spacing inside the container */
+  margin-top: 10px; /* Space above the error message */
+  text-align: left; /* Align text to the left */
+}
+
+/* Error text */
+.error-text {
+  color: #7c000f; /* Dark red text */
+  font-size: 0.80rem; /* Slightly smaller text */
+  margin: 0; /* Remove default margins */
+}
+
+/* Customize text selection */
+::selection {
+  background-color: #C20016; /* Red highlight background */
+  color: #ffffff; /* White text */
+}
+
+
+
+
+
+
