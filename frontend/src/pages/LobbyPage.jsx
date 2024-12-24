@@ -1,17 +1,17 @@
 import React from "react";
-import { useUser } from "../contexts/UserContext";
 import { ChatInput } from "../components/ChatInput";
 import { ChatDisplay } from "../components/ChatDisplay";
 import { RoomLink } from "../components/RoomLink";
+import { PlayerList } from "../components/PlayerList";
 
 function LobbyPage() {
-  const { username, roomName } = useUser();
 
   return (
     <div>
       <ChatDisplay /> {/* Display chat messages */}
-      <ChatInput />   {/* Input to send messages */}
+      <ChatInput />   {/* Input toxw send messages */}
       <RoomLink />
+      <PlayerList />
     </div>
   );
 }

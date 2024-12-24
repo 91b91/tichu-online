@@ -5,6 +5,7 @@ import { useQueryParams } from './useQueryParams.jsx';
 export function useSocket(url) {
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [userList, setUserList] = useState([]);
   const {setQueryParams} = useQueryParams();
   
 
@@ -15,6 +16,10 @@ export function useSocket(url) {
     socketInstance.on('message', (data) => {
       setMessages((prevMessages) => [...prevMessages, data]);
     });
+
+    socketInstance.on('userList', ({ users }) => {
+      setUserList(users);
+    })
 
     return () => socketInstance.disconnect();
   }, [url]);
@@ -42,5 +47,5 @@ export function useSocket(url) {
     }
   }
 
-  return { messages, sendMessage, joinRoom };
+  return { messages, userList, sendMessage, joinRoom };
 }

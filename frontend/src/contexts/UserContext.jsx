@@ -20,7 +20,7 @@ export function UserProvider({ children }) {
   }, [])
 
   // Use useSocket to connect to the backend
-  const { messages, sendMessage, joinRoom } = useSocket("http://localhost:3500");
+  const { messages, userList, sendMessage, joinRoom } = useSocket("http://localhost:3500");
 
   return (
     <UserContext.Provider value={{
@@ -31,6 +31,7 @@ export function UserProvider({ children }) {
       roomName,
       setRoomName,
       messages,
+      userList,
       sendMessage,
       joinRoom
     }}>

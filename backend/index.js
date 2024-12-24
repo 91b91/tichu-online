@@ -40,26 +40,39 @@ io.on('connection', socket => {
     // activate the user
     const user = addUser(socket.id, name, room);
 
+    // update the previous rooms user list
+    if (prevRoom) {
+      io.to(prevRoom).emit('userList', {
+        users: getUsersInRoom(prevRoom)
+      });
+    }
+
     // join room
     socket.join(user.room);
     io.to(user.room).emit('message', buildMsg(SERVER_MSG_TAG, name, 'has joined the room'));
+
+    // update the user list for the current room
+    io.to(user.room).emit('userList', {
+      users: getUsersInRoom(user.room)
     });
+  });
 
   socket.on('disconnect', () => {
     // make sure the user state is updated
     const user = getUser(socket.id);
     removeUser(socket.id);
 
-    console.log(`User ${socket.id} disconnected`)
-  })
+    console.log(`User ${socket.id} disconnected`);
+  });
 
   socket.on('message', (data) => {
     const room = getUser(socket.id)?.room;
     if (room) {
       io.to(room).emit('message', data);
     }
-  })
-})
+  });
+});
+
 
 function addUser(id, name, room) {
   const user = { id, name, room }
@@ -86,6 +99,6 @@ function buildMsg(tag, name, text) {
   return {
     tag: tag,
     name: name,
-    text: text,
+    text: text
   }
 }
