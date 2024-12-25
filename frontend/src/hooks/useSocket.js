@@ -1,3 +1,4 @@
+// useSocket.js
 import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import { useQueryParams } from './useQueryParams.jsx';
@@ -21,7 +22,9 @@ export function useSocket(url) {
       setUserList(users);
     })
 
-    return () => socketInstance.disconnect();
+    return () => {
+      socketInstance.disconnect();
+    };
   }, [url]);
 
   function sendMessage(username, message, tag) {
@@ -34,18 +37,25 @@ export function useSocket(url) {
     }
   }
 
-  function joinRoom({ username, userId, roomName}) {
-    if (username && roomName) {
-      console.log(`User ${username} with id ${socket.id} wants to join ${roomName}`);
-      socket.emit('enterRoom', {
-        name: username,
-        userId: userId,
-        room: roomName
-      })
-
-      setQueryParams({ room: roomName });
-    }
-  }
+  function joinRoom({ username, userId, roomName }) {
+    return new Promise((resolve, reject) => {
+      if (socket) {
+        // Emit the join event
+        socket.emit("enterRoom", { name: username, userId, room: roomName });
+  
+        // Listen for success or error
+        socket.once("roomJoinError", (errorMessage) => {
+          reject(new Error(errorMessage)); // Reject with the error message
+        });
+  
+        socket.once("joinedRoom", () => {
+          resolve(); // Resolve the promise on success
+        });
+      } else {
+        reject(new Error("Socket not initialized."));
+      }
+    });
+  }  
 
   return { messages, userList, sendMessage, joinRoom };
 }

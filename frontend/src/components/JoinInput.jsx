@@ -1,3 +1,4 @@
+// JoinInput.jsx
 import React, { useState, useEffect } from "react";
 import { useQueryParams } from "../hooks/useQueryParams.jsx";
 import { useUser } from "../contexts/UserContext";
@@ -17,29 +18,34 @@ export function JoinInput() {
     }
   }, []);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     const trimmedUsername = username.trim();
     const trimmedRoomName = roomName.trim();
-
+  
     if (trimmedUsername && trimmedRoomName) {
       setUsername(trimmedUsername);
       setRoomName(trimmedRoomName);
       setError(""); // Clear any previous errors
-
-      // Join the room via socket
-      joinRoom({ 
-        username: trimmedUsername, 
-        userId: userId,
-        roomName: trimmedRoomName
-      });
-
-      // Navigate to the RoomPage
-      navigate(`/lobby`);
+  
+      try {
+        // Attempt to join the room
+        await joinRoom({
+          username: trimmedUsername,
+          userId: userId,
+          roomName: trimmedRoomName,
+        });
+  
+        // Navigate to the lobby if successful
+        navigate(`/lobby`);
+      } catch (error) {
+        // Handle the error and display the message
+        setError(error.message);
+      }
     } else {
       setError("Please enter a player name and the room you want to join. If the room doesn't exist, it'll be created.");
     }
-  }
+  }  
 
   return (
     <form onSubmit={handleSubmit} className="join-form">

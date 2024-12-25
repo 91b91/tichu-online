@@ -10,7 +10,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "Backend for Yahtzee Online",
+  "description": "Backend for Tichu Online",
   "dependencies": {
     "express": "^4.21.2",
     "socket.io": "^4.8.1",
