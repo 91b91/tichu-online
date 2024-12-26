@@ -15,6 +15,7 @@ const roomsState = {
     const room = this.addRoom(roomId);
     room.addUser(user); // Errors from here will naturally propagate
     this.socketToRoomMap[user.socketId] = roomId;
+    return room;
   },
 
   removeUserFromRoom(roomId, socketId) {

@@ -48,7 +48,7 @@ export function useSocket(url) {
           reject(new Error(errorMessage)); // Reject with the error message
         });
   
-        socket.once("joinedRoom", () => {
+        socket.once("roomJoinSuccess", () => {
           resolve(); // Resolve the promise on success
         });
       } else {

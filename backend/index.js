@@ -1,8 +1,8 @@
 // backedn index.js
 import express from 'express';
 import { Server } from 'socket.io';
-import roomsState from './roomsState.js'; // Import roomsState
-import User from './userClass.js'; // Import User class
+import roomsState from './roomsState.js';
+import User from './userClass.js';
 
 const PORT = process.env.PORT || 3500;
 const SERVER_MSG_TAG = '[SERVER]';
@@ -16,7 +16,7 @@ const expressServer = app.listen(PORT, () => {
 // Create socket.io using express
 const io = new Server(expressServer, {
   cors: {
-    origin: 'http://localhost:5173', // Allow requests from your React app
+    origin: 'http://localhost:5173', // Allow requests from React frontend during development
     methods: ['GET', 'POST'], // Allowed methods
   },
 });
@@ -24,6 +24,7 @@ const io = new Server(expressServer, {
 io.on('connection', (socket) => {
   console.log(`User ${socket.id} connected`);
 
+  // ---- ENTERING A ROOM ----
   socket.on('enterRoom', ({ name, userId, room }) => {
     console.log(`User with userId: ${userId} wants to join room: ${room}`);
 
@@ -31,31 +32,36 @@ io.on('connection', (socket) => {
     const prevRoom = roomsState.getRoomBySocket(socket.id);
     if (prevRoom) {
       socket.leave(prevRoom.roomId);
-      io.to(prevRoom.roomId).emit('message', buildMsg(SERVER_MSG_TAG, name, 'has left the room'));
+      removeUserFromRoom(prevRoom.roomId, socket.id);
 
-      // Update the user list for the previous room
+      io.to(prevRoom.roomId).emit('message', 
+        buildMsg(SERVER_MSG_TAG, name, 'has left the room')
+      );
+
       io.to(prevRoom.roomId).emit('userList', {
-        users: prevRoom.users.map(user => ({ userId: user.userId, name: user.name })),
+        users: prevRoom.getUserList()
       });
     }
 
     // Add the user to the new room
     const user = new User(name, userId, socket.id);
     try {
+      // Try to add the user (Error when duplicate name OR full capacity)
       roomsState.addUserToRoom(room, user);
       socket.join(room);
-      socket.emit('joinedRoom');
+      socket.emit('roomJoinSuccess');
 
       // Notify users in the new room
       io.to(room).emit('message', buildMsg(SERVER_MSG_TAG, name, 'has joined the room'));
       io.to(room).emit('userList', {
-        users: roomsState.rooms[room].users.map(user => ({ userId: user.userId, name: user.name })),
+        users: roomsState.rooms[room].getUserList()
       });
     } catch (error) {
       socket.emit('roomJoinError', error.message);
     }
   });
 
+  // ---- DISCONNECTING ----
   socket.on('disconnect', () => {
     const room = roomsState.getRoomBySocket(socket.id);
     if (room) {
@@ -63,15 +69,19 @@ io.on('connection', (socket) => {
       roomsState.removeUserFromRoom(room.roomId, socket.id);
 
       // Notify the room of the user leaving
-      io.to(room.roomId).emit('message', buildMsg(SERVER_MSG_TAG, user?.name || 'Unknown User', 'has disconnected'));
+      io.to(room.roomId).emit('message', buildMsg(SERVER_MSG_TAG, user?.name 
+        || 'Unknown User', 'has disconnected'));
+      
+      // Update the user list for that room
       io.to(room.roomId).emit('userList', {
-        users: room.users.map(user => ({ userId: user.userId, name: user.name })),
+        users: room.getUserList()
       });
     }
 
     console.log(`User ${socket.id} disconnected`);
   });
 
+  // ---- MESSAGES FROM USERS ----
   socket.on('message', (data) => {
     const room = roomsState.getRoomBySocket(socket.id);
     if (room) {

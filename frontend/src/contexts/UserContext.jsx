@@ -10,11 +10,15 @@ export function UserProvider({ children }) {
   const [roomName, setRoomName] = useState("");
 
   useEffect(() => {
+    /*
+    // This was for potentially allowing reconnects, but it meant for testing i couldn't really add multiple users to the same room from the same tabs. 
     let uuid = localStorage.getItem('userId')
     if (!uuid) {
       uuid = uuidv4();
       localStorage.setItem('userId', uuid);
     }
+    */
+    const uuid = uuidv4();
     setUserId(uuid);
     console.log(uuid);
   }, [])
