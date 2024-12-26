@@ -88,6 +88,21 @@ io.on('connection', (socket) => {
       io.to(room.roomId).emit('message', data);
     }
   });
+
+  // ---- USER TEAM UPDATES ----
+  socket.on('updateUsersTeam', ({ userId, team }) => {
+    const room = roomsState.getRoomBySocket(socket.id);
+    if (room) {
+      const user = room.getUserByUserId(userId);
+      user.setTeam(team)
+      console.log(user);
+      
+      // Update the user list for that room
+      io.to(room.roomId).emit('userList', {
+        users: room.getUserList()
+      });
+    }
+  });
 });
 
 // Helper function to build messages

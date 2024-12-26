@@ -25,9 +25,7 @@ class Room {
     // Add or replace the user in the room
     console.log(`${user.socketId} has joined the room`);
     this.users = [...this.users.filter(u => u.userId !== user.userId), user];
-    console.log(this.users); // TEMP
   }
-  
 
   getUserByUserId(userId) {
     return this.users.find(user => user.userId === userId);
@@ -46,7 +44,6 @@ class Room {
     if (removedUser.getIsPartyLeader() && this.users.length !==0 ) {
       this.users[0].setIsPartyLeader(true);
     }
-    console.log(this.users); // TEMP
   }
 
   getUserList() {
@@ -54,7 +51,8 @@ class Room {
       {
         userId: user.userId,
         name: user.name,
-        team: user.team
+        team: user.team,
+        isPartyLeader: user.getIsPartyLeader()
       }
     ));
   }

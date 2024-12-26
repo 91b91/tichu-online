@@ -55,7 +55,13 @@ export function useSocket(url) {
         reject(new Error("Socket not initialized."));
       }
     });
-  }  
+  }
 
-  return { messages, userList, sendMessage, joinRoom };
+  function updateUsersTeam(userId, newTeam) {
+    if (socket && newTeam) {
+      socket.emit('updateUsersTeam', {userId, team: newTeam})
+    }
+  }
+
+  return { messages, userList, sendMessage, joinRoom, updateUsersTeam};
 }

@@ -1,5 +1,5 @@
 class User {
-  team = undefined;
+  team = 'Not Selected'
   isPartyLeader = false;
 
   constructor(name, userId, socketId) {
