@@ -1,17 +1,35 @@
-import React from "react";
+import { useState } from "react";
 import { ChatInput } from "../components/ChatInput";
 import { ChatDisplay } from "../components/ChatDisplay";
 import { RoomLink } from "../components/RoomLink";
 import { PlayerList } from "../components/PlayerList";
+import { useUser } from "../contexts/UserContext";
 
 function LobbyPage() {
+  const { roomName, userList, startGameInRoom, currentUser } = useUser();
+  const [error, setError] = useState("");
+
+  async function handleStartGame() { 
+
+    try {
+      if (!currentUser?.isPartyLeader) {
+        throw new Error('Only party leaders can start a game.')
+      }
+
+      await startGameInRoom(roomName);
+    } catch (error) {
+      console.log(error.message);
+      setError(error.message);
+    }
+  }
 
   return (
     <div>
-      <ChatDisplay /> {/* Display chat messages */}
-      <ChatInput />   {/* Input toxw send messages */}
+      <ChatDisplay /> 
+      <ChatInput />  
       <RoomLink />
       <PlayerList />
+      <button onClick={handleStartGame}>Start Game</button>
     </div>
   );
 }

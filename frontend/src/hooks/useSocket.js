@@ -2,13 +2,14 @@
 import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import { useQueryParams } from './useQueryParams.jsx';
+import { useNavigate } from "react-router-dom";
 
 export function useSocket(url) {
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
   const [userList, setUserList] = useState([]);
   const {setQueryParams} = useQueryParams();
-  
+  const navigate = useNavigate();
 
   useEffect(() => {
     const socketInstance = io(url);
@@ -21,6 +22,11 @@ export function useSocket(url) {
     socketInstance.on('userList', ({ users }) => {
       setUserList(users);
     })
+
+    socketInstance.on("startGameSuccess", () => {
+      console.log("Game started successfully. Navigating to game...");
+      navigate("/game"); // Navigate to the game page
+    });
 
     return () => {
       socketInstance.disconnect();
@@ -63,5 +69,24 @@ export function useSocket(url) {
     }
   }
 
-  return { messages, userList, sendMessage, joinRoom, updateUsersTeam};
+  function startGameInRoom(roomId) {
+    return new Promise((resolve, reject) => {
+      if (socket) {
+        socket.emit('startGameRequest', ({ roomId }))
+
+        // Listen for success or error
+        socket.once("startGameError", (errorMessage) => {
+          reject(new Error(errorMessage));
+        });
+
+        socket.once("startGameSuccess", () => {
+          resolve();
+        })
+      } else {
+        reject(new Error("Socket not initialized."));
+      }
+    })
+  }
+
+  return { messages, userList, sendMessage, joinRoom, updateUsersTeam, startGameInRoom };
 }

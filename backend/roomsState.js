@@ -30,9 +30,13 @@ const roomsState = {
     }
   },
 
+  getRoomByRoomId(roomId) {
+    return this.rooms[roomId] || null;
+  },
+
   getRoomBySocket(socketId) {
     const roomId = this.socketToRoomMap[socketId];
-    return this.rooms[roomId] || null;
+    return this.getRoomByRoomId(roomId);
   }
 
 }

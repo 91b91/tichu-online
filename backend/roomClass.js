@@ -56,6 +56,23 @@ class Room {
       }
     ));
   }
+
+  initializeGame() {
+    if (this.users.length != 4) {
+      throw new Error('There must be 4 players in the lobby to start a game.')
+    }
+    if (!this.isValidTeamAssignment()) {
+      throw new Error('Check each player has been assigned a team. Each team must have exactly two players.')
+    }
+    console.log('game initialized');
+  }
+
+  isValidTeamAssignment() {
+    const team1Count = this.users.filter(user => user.getTeam() === 'Team 1').length;
+    const team2Count = this.users.filter(user => user.getTeam() === 'Team 2').length;
+
+    return (team1Count === 2 && team2Count === 2)
+  }
 }
 
 export default Room;

@@ -32,7 +32,7 @@ io.on('connection', (socket) => {
     const prevRoom = roomsState.getRoomBySocket(socket.id);
     if (prevRoom) {
       socket.leave(prevRoom.roomId);
-      removeUserFromRoom(prevRoom.roomId, socket.id);
+      roomsState.removeUserFromRoom(prevRoom.roomId, socket.id);
 
       io.to(prevRoom.roomId).emit('message', 
         buildMsg(SERVER_MSG_TAG, name, 'has left the room')
@@ -103,6 +103,18 @@ io.on('connection', (socket) => {
       });
     }
   });
+
+  // ---- START GAME REQUEST ----
+  socket.on('startGameRequest', ({ roomId }) => {
+    const room = roomsState.getRoomByRoomId(roomId);
+    try {
+      room.initializeGame(roomId);
+      // Alert all users in the room that the game has started
+      io.to(room.roomId).emit('startGameSuccess')
+    } catch (error) {
+      socket.emit('startGameError', error.message)
+    }
+  })
 });
 
 // Helper function to build messages
