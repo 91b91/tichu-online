@@ -4,6 +4,7 @@ import { ChatDisplay } from "../components/ChatDisplay";
 import { RoomLink } from "../components/RoomLink";
 import { PlayerList } from "../components/PlayerList";
 import { useUser } from "../contexts/UserContext";
+import { ErrorMessage } from "../components/ErrorMessage";
 
 function LobbyPage() {
   const { roomName, userList, startGameInRoom, currentUser } = useUser();
@@ -25,11 +26,18 @@ function LobbyPage() {
 
   return (
     <div>
-      <ChatDisplay /> 
-      <ChatInput />  
-      <RoomLink />
-      <PlayerList />
-      <button onClick={handleStartGame}>Start Game</button>
+      <div className="basic-container">
+        <p className="regular-title">Welcome to <strong>{roomName}</strong> </p>
+        <RoomLink />
+        <PlayerList />
+        <button onClick={handleStartGame} className="basic-red-button">Start Game</button>
+        {error && <ErrorMessage errorText={error}/>}
+      </div>
+      <div className="basic-container chat-container"> 
+        <ChatDisplay /> 
+        <ChatInput />  
+      </div>
+      
     </div>
   );
 }

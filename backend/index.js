@@ -114,7 +114,7 @@ io.on('connection', (socket) => {
     } catch (error) {
       socket.emit('startGameError', error.message)
     }
-  })
+  });
 });
 
 // Helper function to build messages

@@ -1,10 +1,24 @@
+:root {
+  --background-colour: #1f1f1f;
+  --shadow-on-background-colour: #111111;
+  --container-background-colour: rgb(25, 25, 25);
+  --main-text-colour: #ffffff;
+  --soft-grey-colour: #b3b3b3;
+  --softer-grey-colour: #343434;
+  --softest-grey-colour: #232323;
+  --primary-red-colour: #C20016; /* red colour from tichu */
+  --primary-darker-red-colour: #A00012;
+  --background-pale-red-colour: #ffd5cd;
+}
+
+
 /* Global styles for the entire page */
 body {
-  margin: 0; /* Removes default browser margins around the page */
+  margin: 0; 
   padding: 0; 
-  font-family: 'Aptos', sans-serif; /* Sets the default font to Arial (can be changed later) */
-  background-color: #2b2b2b; /* Sets a greyish background color */
-  color: #ffffff; /* Ensures text is white for good contrast against the grey background */
+  font-family: 'Aptos', sans-serif; 
+  background-color: var(--background-colour); 
+  color: var(--main-text-colour); 
   display: flex; /* Makes the body a flex container for easier centering */
   justify-content: center; /* Horizontally centers content inside the body */
   height: 100vh; /* Ensures the body takes up the full viewport height */
@@ -12,112 +26,245 @@ body {
 
 /* Form container */
 .join-form {
-  background-color: #1e1e1e; /* Dark grey background for the form */
-  border-radius: 10px; /* Rounds the corners of the form */
-  margin-top: 60px;
-  padding: 24px; /* Adds spacing inside the form */
-  width: 360px; /* Sets the form width */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Adds a shadow for depth */
-  text-align: center; /* Centers text inside the form */
-  box-shadow: 0 0 70px 2px #C20016; /* Adds the glow effect without changing border size */
+  background-color: var(--container-background-colour);; 
+  border-radius: 10px; 
+  margin-top: 72px;
+  padding: 24px; 
+  width: 380px;
+  text-align: center; 
+  box-shadow: 0 0 70px 2px var(--primary-red-colour);
+  border: 1.6px solid var(--softest-grey-colour);
 }
 
-/* Form header */
-.join-title {
+.regular-title {
   font-size: 1.4rem; /* Makes the title larger than normal text */
-  margin-bottom: 10px; /* Adds space below the title */
+  margin-bottom: 10px;
   margin-top: 4px;
 }
 
-.join-subtitle {
-  font-size: 0.9rem; /* Makes the subtitle slightly smaller */
-  color: #b3b3b3; /* A lighter grey for a softer look */
-  margin-bottom: 15px; /* Adds space below the subtitle */
+.regular-subtitle {
+  font-size: 0.9rem; 
+  color: var(--soft-grey-colour); 
+  margin-bottom: 15px; 
 }
 
 .muted-text {
-  font-size: 0.72rem; /* Small, subtle text */
-  color: #484848; /* Muted grey color */
-  text-align: left; /* Aligns the text to the left */
-  margin-top: 5px; /* Adds some space above the text (optional) */
+  font-size: 0.72rem; 
+  color: #474747; 
+  text-align: left; 
+  margin-top: 5px; 
 }
 
 /* Input fields */
 .input-field {
   width: 100%;
   padding: 10px;
-  border: 1.5px solid #444; /* Keeps the border consistent */
+  border: 1.5px solid var(--softer-grey-colour);
   border-radius: 5px;
-  background-color: #2e2e2e;
-  color: #ffffff;
+  background-color: var(--softest-grey-colour);
+  color: var(--main-text-colour);
   font-size: 1rem;
   margin-top: 12px;
   box-sizing: border-box;
-  transition: box-shadow 0.3 ease, border-color 0.2s ease; /* Smooth transition for focus effects */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease; 
 }
 
-/* Input focus state */
 .input-field:focus {
-  outline: none; /* Removes the default focus outline */
-  border-color: #C20016; /* Changes the border color to red */
-  box-shadow: 0 0 5px #C20016; /* Adds the glow effect without changing border size */
+  outline: none;
+  border-color: var(--primary-red-colour); 
+  box-shadow: 0 0 5px var(--primary-red-colour); 
 }
 
 /* Submit button */
-.submit-button {
+.basic-red-button {
   width: 100%; /* Makes the button the same width as the input fields */
-  padding: 10px; /* Adds internal spacing for better clickability */
-  border: none; /* Removes the default border */
-  border-radius: 5px; /* Rounds the corners for a softer look */
-  background-color: #C20016; /* Bright red background for the button */
-  color: #ffffff; /* White text for contrast */
+  padding: 12px; /* Adds internal spacing for better clickability */
+  border: none; 
+  border-radius: 5px; 
+  background-color: var(--primary-red-colour); 
+  color: var(--main-text-colour); 
   font-size: 1rem; /* Matches the input field text size */
-  cursor: pointer; /* Changes the cursor to a pointer to indicate it's clickable */
-  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effects */
+  cursor: pointer; 
+  transition: box-shadow 0.3s ease, transform 0.2s ease; 
 }
 
-.submit-button:hover {
-  background-color: #A00012; /* Darker red when hovered */
-  box-shadow: 0 0 5px #C20016; /* Optional: Adds a subtle red glow */
+.basic-red-button:hover {
+  background-color: var(--primary-darker-red-colour); /* Darker red when hovered */
+  box-shadow: 0 0 5px var(--primary-red-colour); 
   transform: scale(1.01); /* Slightly enlarges the button for a hover effect */
 }
 
-.submit-button:active {
-  background-color: #A00012; /* Even darker red when clicked */
+.basic-red-button:active {
+  background-color: var(--primary-darker-red-colour); 
   transform: scale(0.99); /* Slightly shrinks the button for a click effect */
 }
 
 /* Input focus state */
 .submit-button:focus {
-  outline: none; /* Removes the default blue outline */
-  box-shadow: 0 0 5px #C20016; /* Optional: Adds a subtle red glow */
-  transform: scale(1.01); /* Slightly enlarges the button for a hover effect */
+  outline: none;
+  box-shadow: 0 0 5px var(--primary-red-colour); 
+  transform: scale(1.01); 
 }
 
 /* Error message container */
 .error-message {
-  background-color: #eed2cd; /* Light red background */
-  border-radius: 5px; /* Rounded corners */
-  padding: 16px 12px; /* Spacing inside the container */
-  margin-top: 10px; /* Space above the error message */
+  background-color: var(--background-pale-red-colour); 
+  border-radius: 5px; 
+  padding: 16px 12px; 
+  margin-top: 12px; 
   text-align: left; /* Align text to the left */
 }
 
 /* Error text */
 .error-text {
-  color: #7c000f; /* Dark red text */
+  color: var(--primary-darker-red-colour); 
   font-size: 0.80rem; /* Slightly smaller text */
-  margin: 0; /* Remove default margins */
+  margin: 0; 
 }
 
 /* Customize text selection */
 ::selection {
-  background-color: #C20016; /* Red highlight background */
-  color: #ffffff; /* White text */
+  background-color: var(--primary-red-colour); 
+  color: var(--main-text-colour); 
 }
 
+.basic-container {
+  background-color: var(--container-background-colour);
+  border-radius: 10px;
+  margin-top: 72px;
+  padding: 24px;
+  width: 480px;
+  text-align: center;
+  position: relative;
+  border: 1.6px solid var(--softest-grey-colour);
+}
 
+/* this is just so the shadow goes behind everything */
+.basic-container::before {
+   content: '';
+   position: absolute;
+   height: 100%;
+   width: 100%;
+   bottom: 0;
+   left: 0;
+   border-radius: 10px;
+   box-shadow: 0 0 70px 1px var(--shadow-on-background-colour);
+   z-index: -1;
+}
 
+/* Room Link Container */
+.room-link-container {
+  margin-top: 20px;
+  text-align: center;
+}
 
+/* Room Link Text */
+.room-link-text {
+  font-size: 1rem;
+  color: var(--soft-grey-colour); /* Subtle grey text */
+  margin-bottom: 10px;
+}
 
+/* Wrapper for Input and Button */
+.room-link-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  border: none;
+  overflow: hidden; /* Ensures button is visually connected */
+}
 
+/* Room Link Input */
+.room-link-input {
+  flex: 1; /* Input takes up remaining space */
+  padding: 10px;
+  border: none; /* No separate border for input */
+  background-color: var(--softest-grey-colour);
+  color: var(--soft-grey-colour);
+  border: 1.5px solid var(--softer-grey-colour);
+  border-radius: 5px 0px 0px 5px;
+  font-size: 0.9rem;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Focus State for Input */
+.room-link-input:focus {
+  outline: none;
+}
+
+/* Room Link Button */
+.room-link-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--primary-red-colour);
+  color: var(--main-text-colour);
+  border: 1.5px solid var(--primary-darker-red-colour);
+  border-radius: 0px 5px 5px 0px;
+  padding: 10px 8px;
+  cursor: pointer;
+  height: 100%; 
+  box-sizing: border-box;
+}
+
+/* Hover and Active States for Button */
+.room-link-button:hover {
+  background-color: var(--primary-darker-red-colour);
+}
+
+.room-link-button:active {
+  transform: scale(0.98);
+}
+
+/* Icon inside Button */
+.icon {
+  width: 18px;
+  height: 18px;
+}
+
+.chat-container {
+  margin-top: 20px;
+}
+
+.chat-display {
+  height: 140px; /* Adjust height as needed */
+  overflow-y: scroll; /* Enable vertical scrolling */
+  scrollbar-width: thin; /* For Firefox: Makes the scrollbar thin */
+  scrollbar-color: var(--softer-grey-colour) transparent; /* Grey thumb, no track */
+}
+
+/* For Chrome, Safari, and Edge */
+.chat-display::-webkit-scrollbar {
+  width: 6px; /* Makes the scrollbar thin */
+}
+
+.chat-display::-webkit-scrollbar-thumb {
+  background-color: var(--softer-grey-colour); /* Grey thumb */
+  border-radius: 4px; /* Makes the scrollbar thumb rounded */
+}
+
+.chat-display::-webkit-scrollbar-track {
+  background: transparent; /* No track background */
+}
+
+.chat-messages {
+  list-style: none; /* Removes bullet points */
+  margin: 0; /* No outer margins */
+  padding: 0; /* No padding */
+  text-align: left; /* Align content to the left */
+}
+
+.chat-message-header {
+  color: var(--primary-red-colour);
+  font-weight: bold;
+  margin-right: 4px;
+}
+
+.chat-message-body-dull {
+  color: var(--soft-grey-colour);
+}

@@ -17,13 +17,12 @@ export function ChatInput() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input
+      <input className="input-field"
         type="text"
         placeholder="Your message"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
       />
-      <button type="submit">Send</button>
     </form>
   ); 
 }

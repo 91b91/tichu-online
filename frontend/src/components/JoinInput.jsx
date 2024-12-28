@@ -1,8 +1,9 @@
 // JoinInput.jsx
 import React, { useState, useEffect } from "react";
 import { useQueryParams } from "../hooks/useQueryParams.jsx";
-import { useUser } from "../contexts/UserContext";
+import { useUser } from "../contexts/UserContext.jsx";
 import { useNavigate } from "react-router-dom";
+import { ErrorMessage } from "./ErrorMessage.jsx"
 
 export function JoinInput() {
   const { username, setUsername, userId, roomName, setRoomName, joinRoom } = useUser();
@@ -50,8 +51,8 @@ export function JoinInput() {
   return (
     <form onSubmit={handleSubmit} className="join-form">
       <div className="join-header">
-        <p className="join-title">Let's play Tichu with friends</p>
-        <p className="join-subtitle">To get started, enter your player name and a game room.</p>
+        <p className="regular-title">Let's play Tichu with friends</p>
+        <p className="regular-subtitle">To get started, enter your player name and a game room.</p>
       </div>
       <div className="input-group">
         <input
@@ -71,17 +72,9 @@ export function JoinInput() {
           className="input-field"
         />
         <p className="muted-text">Other players can join using the same room name on their device</p>
-        <button type="submit" className="submit-button">Join Room</button>
+        <button type="submit" className="basic-red-button">Join Room</button>
       </div>
       {error && <ErrorMessage errorText={error} />} {/* Display the error message if it exists */}
     </form>
-  );
-}
-
-function ErrorMessage({ errorText }) {
-  return (
-    <div className="error-message">
-      <p className="error-text">{errorText}</p>
-    </div>
   );
 }
