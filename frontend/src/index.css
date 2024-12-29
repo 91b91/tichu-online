@@ -1,7 +1,7 @@
 :root {
-  --background-colour: #1f1f1f;
+  --background-colour: rgb(50, 50, 50);
   --shadow-on-background-colour: #111111;
-  --container-background-colour: rgb(25, 25, 25);
+  --container-background-colour: rgb(32, 32, 32);
   --main-text-colour: #ffffff;
   --soft-grey-colour: #b3b3b3;
   --softer-grey-colour: #343434;
@@ -12,32 +12,20 @@
 }
 
 
-/* Global styles for the entire page */
+/* ---- GLOBAL STYLES ---- */
 body {
   margin: 0; 
   padding: 0; 
   font-family: 'Aptos', sans-serif; 
   background-color: var(--background-colour); 
   color: var(--main-text-colour); 
-  display: flex; /* Makes the body a flex container for easier centering */
-  justify-content: center; /* Horizontally centers content inside the body */
-  height: 100vh; /* Ensures the body takes up the full viewport height */
-}
-
-/* Form container */
-.join-form {
-  background-color: var(--container-background-colour);; 
-  border-radius: 10px; 
-  margin-top: 72px;
-  padding: 24px; 
-  width: 380px;
-  text-align: center; 
-  box-shadow: 0 0 70px 2px var(--primary-red-colour);
-  border: 1.6px solid var(--softest-grey-colour);
+  display: flex;
+  justify-content: center; 
+  height: 100vh;
 }
 
 .regular-title {
-  font-size: 1.4rem; /* Makes the title larger than normal text */
+  font-size: 1.4rem;
   margin-bottom: 10px;
   margin-top: 4px;
 }
@@ -55,7 +43,78 @@ body {
   margin-top: 5px; 
 }
 
-/* Input fields */
+.basic-red-button {
+  width: 100%;
+  padding: 12px;
+  border: none; 
+  border-radius: 5px; 
+  background-color: var(--primary-red-colour); 
+  color: var(--main-text-colour); 
+  font-size: 1rem; /* Matches the input field text size */
+  cursor: pointer; 
+  transition: box-shadow 0.3s ease, transform 0.2s ease; 
+}
+
+.basic-red-button:hover {
+  background-color: var(--primary-darker-red-colour);
+  box-shadow: 0 0 5px var(--primary-red-colour); 
+  transform: scale(1.01); 
+}
+
+.basic-red-button:active {
+  background-color: var(--primary-darker-red-colour); 
+  transform: scale(0.99);
+}
+
+.basic-red-button:focus {
+  outline: none;
+  box-shadow: 0 0 5px var(--primary-red-colour); 
+  transform: scale(1.01); 
+}
+
+.error-message {
+  background-color: var(--background-pale-red-colour); 
+  border-radius: 5px; 
+  padding: 16px 12px; 
+  margin-top: 12px; 
+  text-align: left; 
+}
+
+.error-text {
+  color: var(--primary-darker-red-colour); 
+  font-size: 0.81rem; 
+  margin: 0; 
+}
+
+::selection {
+  background-color: var(--primary-red-colour); 
+  color: var(--main-text-colour); 
+}
+
+/* BASIC CONTAINER */
+.basic-container {
+  background-color: var(--container-background-colour);
+  border-radius: 10px;
+  margin-top: 60px;
+  padding: 24px;
+  width: 484px;
+  text-align: center;
+  position: relative;
+  border: 1.6px solid var(--softer-grey-colour);
+}
+
+.basic-container::before {
+   content: '';
+   position: absolute;
+   height: 100%;
+   width: 100%;
+   bottom: 0;
+   left: 0;
+   border-radius: 10px;
+   box-shadow: 0 0 70px 1px var(--shadow-on-background-colour);
+   z-index: -1;
+}
+
 .input-field {
   width: 100%;
   padding: 10px;
@@ -75,112 +134,46 @@ body {
   box-shadow: 0 0 5px var(--primary-red-colour); 
 }
 
-/* Submit button */
-.basic-red-button {
-  width: 100%; /* Makes the button the same width as the input fields */
-  padding: 12px; /* Adds internal spacing for better clickability */
-  border: none; 
-  border-radius: 5px; 
-  background-color: var(--primary-red-colour); 
-  color: var(--main-text-colour); 
-  font-size: 1rem; /* Matches the input field text size */
-  cursor: pointer; 
-  transition: box-shadow 0.3s ease, transform 0.2s ease; 
-}
-
-.basic-red-button:hover {
-  background-color: var(--primary-darker-red-colour); /* Darker red when hovered */
-  box-shadow: 0 0 5px var(--primary-red-colour); 
-  transform: scale(1.01); /* Slightly enlarges the button for a hover effect */
-}
-
-.basic-red-button:active {
-  background-color: var(--primary-darker-red-colour); 
-  transform: scale(0.99); /* Slightly shrinks the button for a click effect */
-}
-
-/* Input focus state */
-.submit-button:focus {
-  outline: none;
-  box-shadow: 0 0 5px var(--primary-red-colour); 
-  transform: scale(1.01); 
-}
-
-/* Error message container */
-.error-message {
-  background-color: var(--background-pale-red-colour); 
-  border-radius: 5px; 
-  padding: 16px 12px; 
-  margin-top: 12px; 
-  text-align: left; /* Align text to the left */
-}
-
-/* Error text */
-.error-text {
-  color: var(--primary-darker-red-colour); 
-  font-size: 0.80rem; /* Slightly smaller text */
-  margin: 0; 
-}
-
-/* Customize text selection */
-::selection {
-  background-color: var(--primary-red-colour); 
-  color: var(--main-text-colour); 
-}
-
-.basic-container {
-  background-color: var(--container-background-colour);
-  border-radius: 10px;
+/* ---- JOIN PAGE ---- */
+.join-form {
+  background-color: var(--container-background-colour);; 
+  border-radius: 10px; 
   margin-top: 72px;
-  padding: 24px;
-  width: 480px;
-  text-align: center;
-  position: relative;
+  padding: 24px; 
+  width: 380px;
+  text-align: center; 
+  box-shadow: 0 0 70px 2px var(--primary-red-colour);
   border: 1.6px solid var(--softest-grey-colour);
 }
 
-/* this is just so the shadow goes behind everything */
-.basic-container::before {
-   content: '';
-   position: absolute;
-   height: 100%;
-   width: 100%;
-   bottom: 0;
-   left: 0;
-   border-radius: 10px;
-   box-shadow: 0 0 70px 1px var(--shadow-on-background-colour);
-   z-index: -1;
+/* ---- LOBBY PAGE ---- */
+.lobby-container {
+  margin-top: 60px;
 }
 
-/* Room Link Container */
 .room-link-container {
   margin-top: 20px;
   text-align: center;
 }
 
-/* Room Link Text */
 .room-link-text {
   font-size: 1rem;
   color: var(--soft-grey-colour); /* Subtle grey text */
   margin-bottom: 10px;
 }
-
-/* Wrapper for Input and Button */
 .room-link-wrapper {
   display: flex;
-  align-items: center;
+  align-items: stretch; /* Stretch children to height */
   width: 100%;
   max-width: 420px;
   margin: 0 auto;
   border: none;
-  overflow: hidden; /* Ensures button is visually connected */
+  height: 40px; 
 }
 
-/* Room Link Input */
 .room-link-input {
-  flex: 1; /* Input takes up remaining space */
+  flex: 1; /* input should take up remaining space */
   padding: 10px;
-  border: none; /* No separate border for input */
   background-color: var(--softest-grey-colour);
   color: var(--soft-grey-colour);
   border: 1.5px solid var(--softer-grey-colour);
@@ -190,57 +183,126 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  box-sizing: border-box;
 }
 
-/* Focus State for Input */
 .room-link-input:focus {
   outline: none;
 }
 
-/* Room Link Button */
 .room-link-button {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center; 
   background-color: var(--primary-red-colour);
   color: var(--main-text-colour);
   border: 1.5px solid var(--primary-darker-red-colour);
   border-radius: 0px 5px 5px 0px;
-  padding: 10px 8px;
   cursor: pointer;
-  height: 100%; 
+  padding: 0 8px;
   box-sizing: border-box;
-}
-
-/* Hover and Active States for Button */
-.room-link-button:hover {
-  background-color: var(--primary-darker-red-colour);
 }
 
 .room-link-button:active {
   transform: scale(0.98);
 }
 
-/* Icon inside Button */
 .icon {
   width: 18px;
   height: 18px;
 }
 
+/* ---- PLAYER CARD ---- */
+.player-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Two equal-width columns */
+  grid-gap: 0.6rem; /* Adjust gap as needed */
+  width: 100%; /* Ensure it fills the container */
+  max-width: 600px; /* Optional: Set max width for the grid */
+  margin: 20px auto; /* Center the grid in the container */
+}
+
+.player-card-container,
+.empty-slot {
+  border: 1.5px solid var(--softer-grey-colour);
+  border-radius: 8px;
+  color: var(--softer-grey-colour);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  height: 52px; /* Adjust the height of the grid items */
+  padding: 1px 8px; /* Adjust horizontal padding for better alignment */
+}
+
+.player-card-container {
+  background-color: rgb(22, 22, 22);
+  border: 1.5px solid var(--softer-grey-colour);
+  box-shadow: inset 0 0 6px 2px rgba(18, 18, 18, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Add space between child elements */
+}
+
+.player-profile {
+  display: flex; /* Ensure centering of content */
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1; /* Makes it circular and dynamically sized */
+  height: 80%; /* Profile takes 80% of the container's height */
+  border-radius: 50%; /* Perfect circle */
+  margin-right: 0px; /* Space between profile and text */
+  background-color: var(--primary-darker-red-colour);
+  color: var(--main-text-colour);
+  font-size: 1.1em;
+}
+
+.player-name-text {
+  font-size: 0.9em;
+  color: white;
+  white-space: nowrap; /* Prevent text wrapping */
+  overflow: hidden; /* Hide overflowing text */
+  text-overflow: ellipsis; /* Add ellipsis for overflowing text */
+  max-width: 70%; /* Set a maximum width for the text */
+}
+
+.team-selector {
+  margin-left: auto;
+  background-color: var(--softer-grey-colour);
+  height: 64%;
+  width: 50%;
+  padding-left: 4px;
+  border-radius: 6px;
+  font-size: 0.9em;
+  border: none;
+  color: white;
+}
+
+.team-selector:focus {
+  outline: none;
+}
+
+.team-selector:disabled {
+  background-color: var(--disabled-grey-colour); 
+  color: var(--soft-grey-text); 
+  cursor: not-allowed; 
+  opacity: 0.7; 
+}
+
+/* ---- CHAT ----- */
 .chat-container {
   margin-top: 20px;
 }
 
 .chat-display {
-  height: 140px; /* Adjust height as needed */
-  overflow-y: scroll; /* Enable vertical scrolling */
-  scrollbar-width: thin; /* For Firefox: Makes the scrollbar thin */
-  scrollbar-color: var(--softer-grey-colour) transparent; /* Grey thumb, no track */
+  height: 140px; 
+  overflow-y: scroll; 
+  scrollbar-width: thin; /* for firefox */
+  scrollbar-color: var(--softer-grey-colour) transparent; 
 }
 
 /* For Chrome, Safari, and Edge */
 .chat-display::-webkit-scrollbar {
-  width: 6px; /* Makes the scrollbar thin */
+  width: 6px; 
 }
 
 .chat-display::-webkit-scrollbar-thumb {

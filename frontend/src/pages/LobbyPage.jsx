@@ -26,7 +26,7 @@ function LobbyPage() {
 
   return (
     <div>
-      <div className="basic-container">
+      <div className="basic-container lobby-container">
         <p className="regular-title">Welcome to <strong>{roomName}</strong> </p>
         <RoomLink />
         <PlayerList />
