@@ -32,7 +32,7 @@ function PlayerLobbyCard({ user, handleTeamChange, isDisabled }) {
   return (
     <div className="player-card-container">
       <div className="player-profile">
-        {user.name.charAt(0).toUpperCase()}
+        <span>{user.name.charAt(0).toUpperCase()}</span>
       </div>
       <p className="player-name-text">
         {user.name}

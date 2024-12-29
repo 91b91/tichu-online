@@ -100,7 +100,7 @@ body {
   width: 484px;
   text-align: center;
   position: relative;
-  border: 1.6px solid var(--softer-grey-colour);
+  border: 1.6px solid #282828;
 }
 
 .basic-container::before {
@@ -148,7 +148,7 @@ body {
 
 /* ---- LOBBY PAGE ---- */
 .lobby-container {
-  margin-top: 60px;
+  margin-top: 50px;
 }
 
 .room-link-container {
@@ -216,65 +216,71 @@ body {
 .player-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* Two equal-width columns */
-  grid-gap: 0.6rem; /* Adjust gap as needed */
-  width: 100%; /* Ensure it fills the container */
-  max-width: 600px; /* Optional: Set max width for the grid */
-  margin: 20px auto; /* Center the grid in the container */
+  row-gap: 0.4rem;    /* Adjust the vertical gap between rows */
+  column-gap: 0.82rem;   /* Adjust the horizontal gap between columns */
+  width: 100%;        /* Ensure it fills the container */
+  max-width: 600px;   /* Optional: Set max width for the grid */
+  margin: 20px auto;  /* Center the grid in the container */
 }
 
 .player-card-container,
 .empty-slot {
-  border: 1.5px solid var(--softer-grey-colour);
+  padding: 0px 2px;
+  height: 50px;
+  width: 100%;
+  border: 1.4px solid var(--softer-grey-colour);
   border-radius: 8px;
-  color: var(--softer-grey-colour);
-  text-align: center;
+}
+
+.empty-slot {
   display: flex;
   align-items: center;
-  height: 52px; /* Adjust the height of the grid items */
-  padding: 1px 8px; /* Adjust horizontal padding for better alignment */
+  justify-content: center;
+  color: var(--softer-grey-colour);
 }
 
 .player-card-container {
-  background-color: rgb(22, 22, 22);
-  border: 1.5px solid var(--softer-grey-colour);
-  box-shadow: inset 0 0 6px 2px rgba(18, 18, 18, 0.4);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem; /* Add space between child elements */
+  display: grid;
+  grid-template-columns: 2fr 5fr 1fr;
+  background-color: rgb(24, 24, 24);
+  box-shadow: inset 0 0 3px 2px rgba(16, 16, 16, 0.228);
+  border: 1.4px solid var(--softer-grey-colour);
 }
 
 .player-profile {
-  display: flex; /* Ensure centering of content */
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: 1; /* Makes it circular and dynamically sized */
-  height: 80%; /* Profile takes 80% of the container's height */
-  border-radius: 50%; /* Perfect circle */
-  margin-right: 0px; /* Space between profile and text */
-  background-color: var(--primary-darker-red-colour);
-  color: var(--main-text-colour);
-  font-size: 1.1em;
+  place-self: center;
+  height: 82%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background-color: var(--primary-red-colour);
+  
+  font-size: 1.2em;
+  display: flex;           
+  justify-content: center; 
+  align-items: center;    
 }
 
 .player-name-text {
-  font-size: 0.9em;
-  color: white;
-  white-space: nowrap; /* Prevent text wrapping */
-  overflow: hidden; /* Hide overflowing text */
-  text-overflow: ellipsis; /* Add ellipsis for overflowing text */
-  max-width: 70%; /* Set a maximum width for the text */
+  padding-left: 2px;
+  align-self: center;
+  overflow: hidden;          /* Prevents content from overflowing */
+  text-overflow: ellipsis;   /* Adds "..." to truncated text */
+  white-space: nowrap;       /* Ensures text does not wrap to a new line */
+  text-align: left;          /* Align text to the left */
 }
 
 .team-selector {
-  margin-left: auto;
-  background-color: var(--softer-grey-colour);
+  place-self: center;
   height: 64%;
-  width: 50%;
-  padding-left: 4px;
-  border-radius: 6px;
-  font-size: 0.9em;
+  text-align: center;
+  border-radius: 5px;
+  margin-right: 5px;
   border: none;
-  color: white;
+  background-color: var(--softer-grey-colour);
+  color: var(--main-text-colour);
+  padding-left: 4px;
+  padding-right: 4px;
+  cursor: pointer;
 }
 
 .team-selector:focus {
@@ -282,11 +288,11 @@ body {
 }
 
 .team-selector:disabled {
-  background-color: var(--disabled-grey-colour); 
-  color: var(--soft-grey-text); 
-  cursor: not-allowed; 
-  opacity: 0.7; 
+  appearance: none;
+  cursor: not-allowed;
 }
+
+
 
 /* ---- CHAT ----- */
 .chat-container {
