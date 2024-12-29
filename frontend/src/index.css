@@ -1,11 +1,11 @@
 :root {
-  --background-colour: rgb(50, 50, 50);
-  --shadow-on-background-colour: #111111;
-  --container-background-colour: rgb(32, 32, 32);
+  --background-colour: rgb(39, 39, 41);
+  --shadow-on-background-colour: rgb(17, 17, 19);
+  --container-background-colour: rgb(30, 30, 31);
   --main-text-colour: #ffffff;
-  --soft-grey-colour: #b3b3b3;
-  --softer-grey-colour: #343434;
-  --softest-grey-colour: #232323;
+  --soft-grey-colour: rgb(179, 179, 181);
+  --softer-grey-colour: rgb(52, 52, 54);
+  --softest-grey-colour: rgb(35, 35, 37);
   --primary-red-colour: #C20016; /* red colour from tichu */
   --primary-darker-red-colour: #A00012;
   --background-pale-red-colour: #ffd5cd;
@@ -47,18 +47,18 @@ body {
   width: 100%;
   padding: 12px;
   border: none; 
-  border-radius: 5px; 
+  border-radius: 6px; 
   background-color: var(--primary-red-colour); 
   color: var(--main-text-colour); 
   font-size: 1rem; /* Matches the input field text size */
   cursor: pointer; 
-  transition: box-shadow 0.3s ease, transform 0.2s ease; 
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease; /* Added background-color */
 }
 
 .basic-red-button:hover {
   background-color: var(--primary-darker-red-colour);
-  box-shadow: 0 0 5px var(--primary-red-colour); 
   transform: scale(1.01); 
+  box-shadow: 0 0 6px var(--primary-red-colour); 
 }
 
 .basic-red-button:active {
@@ -68,13 +68,12 @@ body {
 
 .basic-red-button:focus {
   outline: none;
-  box-shadow: 0 0 5px var(--primary-red-colour); 
-  transform: scale(1.01); 
+  box-shadow: 0 0 6px var(--primary-red-colour); 
 }
 
 .error-message {
   background-color: var(--background-pale-red-colour); 
-  border-radius: 5px; 
+  border-radius: 6px; 
   padding: 16px 12px; 
   margin-top: 12px; 
   text-align: left; 
@@ -82,7 +81,7 @@ body {
 
 .error-text {
   color: var(--primary-darker-red-colour); 
-  font-size: 0.81rem; 
+  font-size: 0.84rem; 
   margin: 0; 
 }
 
@@ -159,7 +158,7 @@ body {
 .room-link-text {
   font-size: 1rem;
   color: var(--soft-grey-colour); /* Subtle grey text */
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 .room-link-wrapper {
   display: flex;
@@ -169,10 +168,11 @@ body {
   margin: 0 auto;
   border: none;
   height: 40px; 
+  transition: box-shadow 0.3s ease, border-color 0.3s ease; /* Smooth transitions */
 }
 
 .room-link-input {
-  flex: 1; /* input should take up remaining space */
+  flex: 1; /* Input should take up remaining space */
   padding: 10px;
   background-color: var(--softest-grey-colour);
   color: var(--soft-grey-colour);
@@ -184,27 +184,36 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   box-sizing: border-box;
+  border-right: none;
+  transition: border-color 0.3s ease; /* Smooth transition */
 }
 
 .room-link-input:focus {
   outline: none;
+  border-color: var(--primary-red-colour);
 }
 
 .room-link-button {
-  display: flex;
-  align-items: center;
-  justify-content: center; 
-  background-color: var(--primary-red-colour);
-  color: var(--main-text-colour);
   border: 1.5px solid var(--primary-darker-red-colour);
   border-radius: 0px 5px 5px 0px;
   cursor: pointer;
   padding: 0 8px;
   box-sizing: border-box;
+  width: 9%;
+  transition: border-color 0.3s ease; /* Smooth transition */
+}
+
+.room-link-button:hover {
+  transform: scale(1.02);
+  background-color: var(--primary-red-colour);
 }
 
 .room-link-button:active {
   transform: scale(0.98);
+}
+
+.room-link-button:focus {
+  border-color: var(--primary-red-colour);
 }
 
 .icon {
@@ -253,11 +262,12 @@ body {
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   background-color: var(--primary-red-colour);
-  
   font-size: 1.2em;
   display: flex;           
   justify-content: center; 
   align-items: center;    
+  margin-left: 4px; /* Add horizontal space */
+  margin-right: 4px;
 }
 
 .player-name-text {
@@ -277,21 +287,23 @@ body {
   margin-right: 5px;
   border: none;
   background-color: var(--softer-grey-colour);
-  color: var(--main-text-colour);
+  border: 1.4px solid var(--softer-grey-colour);
+  color: var(--soft-grey-colour);
   padding-left: 4px;
   padding-right: 4px;
   cursor: pointer;
+  accent-color: var(--primary-red-colour);
 }
 
 .team-selector:focus {
   outline: none;
+  border: 1.4px solid var(--soft-grey-colour);
 }
 
 .team-selector:disabled {
   appearance: none;
   cursor: not-allowed;
 }
-
 
 
 /* ---- CHAT ----- */

@@ -20,7 +20,7 @@ export function PlayerList() {
           />
         ) : (
           <div key={index} className="empty-slot">
-            Waiting for Player {index + 1}
+            waiting for player {index + 1}...
           </div>
         );
       })}
