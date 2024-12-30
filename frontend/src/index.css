@@ -225,11 +225,11 @@ body {
 .player-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* Two equal-width columns */
-  row-gap: 0.4rem;    /* Adjust the vertical gap between rows */
-  column-gap: 0.82rem;   /* Adjust the horizontal gap between columns */
-  width: 100%;        /* Ensure it fills the container */
-  max-width: 600px;   /* Optional: Set max width for the grid */
-  margin: 20px auto;  /* Center the grid in the container */
+  row-gap: 0.4rem;
+  column-gap: 0.82rem;   
+  width: 100%;        
+  max-width: 600px;   
+  margin: 22px auto;  
 }
 
 .player-card-container,

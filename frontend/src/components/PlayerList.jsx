@@ -36,7 +36,7 @@ function PlayerLobbyCard({ user, handleTeamChange, isDisabled }) {
       </div>
       <p className="player-name-text">
         {user.name}
-        {user.isPartyLeader ? " (PL)" : ""}
+        <span className="crown">{user.isPartyLeader && " (👑)"}</span>
       </p>
       <select className="team-selector"
         value={user.team || "Not Selected"}
