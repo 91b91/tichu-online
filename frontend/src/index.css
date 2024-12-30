@@ -348,3 +348,48 @@ body {
 .chat-message-body-dull {
   color: var(--soft-grey-colour);
 }
+
+/* ---- HAND ---- */
+
+.hand-container {
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  min-height: 150px;
+}
+
+.cards-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 20px;
+}
+
+.card-wrapper {
+  cursor: grab;
+}
+
+.card-wrapper:focus {
+  outline: none;
+}
+
+.card-wrapper.selected .card-image {
+  filter: brightness(85%);
+  outline: none;
+  transform: translateY(-10px);
+}
+
+.card-image {
+  width: 80px;
+  height: 112px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: filter 0.2s ease-out;
+}
+
+.selected-cards {
+  text-align: center;
+  padding: 10px;
+  color: #666;
+  font-size: 14px;
+}
