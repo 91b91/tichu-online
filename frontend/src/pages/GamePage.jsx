@@ -1,8 +1,9 @@
 import React from "react";
+import { Hand } from "../components/Hand";
 
 function GamePage() {
   return(
-    <p>Game Room Wow</p>
+    <Hand></Hand>
   )
 }
 
