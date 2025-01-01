@@ -8,6 +8,7 @@ export function useSocket(url) {
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
   const [userList, setUserList] = useState([]);
+  const [playStack, setPlayStack] = useState([]);
   const {setQueryParams} = useQueryParams();
   const navigate = useNavigate();
 
@@ -22,6 +23,10 @@ export function useSocket(url) {
     socketInstance.on('userList', ({ users }) => {
       setUserList(users);
     })
+
+    socketInstance.on('playStack', (playStack) => {
+      setPlayStack(playStack);
+    });
 
     socketInstance.on("startGameSuccess", () => {
       console.log("Game started successfully. Navigating to game...");
@@ -88,5 +93,23 @@ export function useSocket(url) {
     })
   }
 
-  return { messages, userList, sendMessage, joinRoom, updateUsersTeam, startGameInRoom };
+  function playSelectedCards(userId, selectedCards) {
+    return new Promise((resolve, reject) => {
+      if (socket) {
+        socket.emit("playSelectedCardsRequest", ({userId, selectedCards}))
+
+        socket.once("playSelectedCardsError", (errorMessage) => {
+          reject(new Error(errorMessage));
+        });
+
+        socket.once("playSelectedCardsSuccess", () => {
+          resolve();
+        })
+      } else {
+        reject(new Error("Socket not initialized."));
+      }
+    })
+  }
+
+  return { messages, userList, sendMessage, joinRoom, updateUsersTeam, startGameInRoom, playSelectedCards, playStack };
 }

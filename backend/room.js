@@ -3,6 +3,7 @@ import { DECK_CARDS } from './constants/cards.js'
 class Room {
   static MAX_CAPACITY = 4;
   users = [];
+  playStack=[];
 
   constructor(roomId) {
     this.roomId = roomId;
@@ -96,6 +97,24 @@ class Room {
       const userCards = shuffledDeck.slice(startIndex, startIndex + cardsPerPlayer);
       user.setHand(userCards);
     });
+  }
+
+  // DO THESE FOLLOWING FUNCTIONS LOOK OK??? 
+  addToPlayStack(play) {
+    if (!play || typeof play.toJSON !== 'function') {
+      throw new Error('Invalid play object');
+    }
+
+    const playOnTop = this.playStack[this.playStack.length - 1];
+    if (playOnTop && play.getUserId() === playOnTop.getUserId()) {
+      throw new Error('You cannot play on your own play.');
+    }
+    
+    this.playStack.push(play);
+  }
+
+  getPlayStackJSON() {
+    return this.playStack.map((play) => play.toJSON());
   }
 }
 

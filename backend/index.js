@@ -3,6 +3,7 @@ import express from 'express';
 import { Server } from 'socket.io';
 import roomsState from './roomsState.js';
 import User from './user.js';
+import Play from './play.js'
 
 const PORT = process.env.PORT || 3500;
 const SERVER_MSG_TAG = '[SERVER]';
@@ -116,6 +117,28 @@ io.on('connection', (socket) => {
       io.to(room.roomId).emit('startGameSuccess')
     } catch (error) {
       socket.emit('startGameError', error.message)
+    }
+  });
+
+  // ---- PLAY SELECTED CARDS REQUEST ----
+  socket.on('playSelectedCardsRequest', ({ userId, selectedCards }) => {
+    const room = roomsState.getRoomByUserId(userId);
+    if (!room) {
+      console.log('OH NO');
+      return;
+    }
+    try {
+      room.addToPlayStack(new Play(userId, selectedCards));
+
+      io.to(room.roomId).emit('playStack', 
+        room.getPlayStackJSON()
+      );
+
+      console.log(room.getPlayStackJSON());
+
+      io.to(room.roomId).emit('playSelectedCardsSuccess')
+    } catch(error) {
+      socket.emit('playSelectedCardsError', error.message);
     }
   });
 });

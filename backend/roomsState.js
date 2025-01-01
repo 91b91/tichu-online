@@ -37,6 +37,16 @@ const roomsState = {
   getRoomBySocket(socketId) {
     const roomId = this.socketToRoomMap[socketId];
     return this.getRoomByRoomId(roomId);
+  },
+
+  getRoomByUserId(userId) {
+    for (const roomId in this.rooms) {
+      const room = this.rooms[roomId];
+      if (room.getUserByUserId(userId)) {
+        return room;
+      }
+    }
+    return null;
   }
 
 }
