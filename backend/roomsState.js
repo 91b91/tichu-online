@@ -1,4 +1,4 @@
-import Room from './roomClass.js'
+import Room from './room.js'
 
 const roomsState = {
   rooms: {},

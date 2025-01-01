@@ -1,4 +1,7 @@
+// Hand.js
 import React, { useState, useEffect } from 'react';
+import { useUser } from "../contexts/UserContext";
+import { useCardSelection } from '../contexts/CardSelectionContext';
 import {
   DndContext,
   closestCenter,
@@ -15,12 +18,26 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 
 export function Hand() {
-  const [cards, setCards] = useState([
-    { id: '1', name: 'Jade 8', imagePath: '/card-assets/tichu-card-jade-8.png', selected: false },
-    { id: '2', name: 'Pagoda 8', imagePath: '/card-assets/tichu-card-pagoda-8.png', selected: false },
-    { id: '3', name: 'Sword 3', imagePath: '/card-assets/tichu-card-sword-3.png', selected: false },
-    { id: '4', name: 'Star 9', imagePath: '/card-assets/tichu-card-star-9.png', selected: false },
-  ]);
+  const { currentUser } = useUser();
+  const [cards, setCards] = useState([]);
+  const { 
+    selectCards, 
+    clearSelection, 
+    lastSelectedIndex, 
+    updateLastSelectedIndex 
+  } = useCardSelection();
+
+  // Initialize cards with server data and add selected property
+  useEffect(() => {
+    if (currentUser?.hand) {
+      setCards(currentUser.hand.map(card => ({
+        ...card,
+        imagePath: `./card-assets/tichu-card-${card.id}.png`,
+        selected: false,
+        name: `${card.suit} ${card.value}`
+      })));
+    }
+  }, [currentUser?.hand]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -29,12 +46,13 @@ export function Hand() {
           ...card,
           selected: false
         })));
+        clearSelection();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [clearSelection]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -56,14 +74,31 @@ export function Hand() {
 
   const handleCardClick = (index, event) => {
     if (event.detail === 0) return;
-    
-    setCards(cards.map((card, i) => ({
-      ...card,
-      selected: i === index ? !card.selected : card.selected
-    })));
-  };
 
-  const selectedCards = cards.filter(card => card.selected);
+    setCards(cards => {
+      let newCards;
+      if (event.shiftKey && lastSelectedIndex !== null) {
+        const start = Math.min(lastSelectedIndex, index);
+        const end = Math.max(lastSelectedIndex, index);
+        
+        newCards = cards.map((card, i) => ({
+          ...card,
+          selected: i >= start && i <= end ? true : card.selected
+        }));
+      } else {
+        newCards = cards.map((card, i) => ({
+          ...card,
+          selected: i === index ? !card.selected : card.selected
+        }));
+      }
+
+      // Update the selected cards in the context
+      selectCards(newCards.filter(card => card.selected));
+      return newCards;
+    });
+
+    updateLastSelectedIndex(index);
+  };
 
   return (
     <div>
@@ -91,11 +126,6 @@ export function Hand() {
           </SortableContext>
         </DndContext>
       </div>
-      <div className="selected-cards">
-        Selected cards: {selectedCards.length > 0 
-          ? selectedCards.map(card => card.name).join(', ') 
-          : 'None'}
-      </div>
     </div>
   );
 }
@@ -115,7 +145,7 @@ const SortableCard = ({ card, index, totalCards, onCardClick }) => {
     transition,
     position: 'relative',
     zIndex: isDragging ? 9999 : index,
-    marginLeft: index === 0 ? '0' : '-50px',
+    marginLeft: index === 0 ? '0' : '-88px',
   };
 
   const handleClick = (e) => {
@@ -140,4 +170,4 @@ const SortableCard = ({ card, index, totalCards, onCardClick }) => {
       />
     </div>
   );
-};
+}

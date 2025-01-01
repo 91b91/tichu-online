@@ -1,3 +1,5 @@
+import { DECK_CARDS } from './constants/cards.js'
+
 class Room {
   static MAX_CAPACITY = 4;
   users = [];
@@ -52,7 +54,8 @@ class Room {
         userId: user.userId,
         name: user.name,
         team: user.team,
-        isPartyLeader: user.getIsPartyLeader()
+        isPartyLeader: user.getIsPartyLeader(),
+        hand: user.getHand()
       }
     ));
   }
@@ -64,7 +67,8 @@ class Room {
     if (!this.isValidTeamAssignment()) {
       throw new Error('Check each player has been assigned a team. Each team must have exactly two players.')
     }
-    console.log('game initialized');
+
+    this.dealCards(this.users, DECK_CARDS);
   }
 
   isValidTeamAssignment() {
@@ -72,6 +76,26 @@ class Room {
     const team2Count = this.users.filter(user => user.getTeam() === 'Team 2').length;
 
     return (team1Count === 2 && team2Count === 2)
+  }
+
+  // maybe make this private?
+  dealCards(users, deckCards) {
+    // Create a copy of the deck to shuffle
+    const shuffledDeck = [...deckCards];
+    
+    // Fisher-Yates shuffle algorithm
+    for (let i = shuffledDeck.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledDeck[i], shuffledDeck[j]] = [shuffledDeck[j], shuffledDeck[i]];
+    }
+  
+    // Deal cards to each user (assuming 4 players, 14 cards each in Tichu)
+    const cardsPerPlayer = 14;
+    users.forEach((user, index) => {
+      const startIndex = index * cardsPerPlayer;
+      const userCards = shuffledDeck.slice(startIndex, startIndex + cardsPerPlayer);
+      user.setHand(userCards);
+    });
   }
 }
 

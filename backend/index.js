@@ -2,7 +2,7 @@
 import express from 'express';
 import { Server } from 'socket.io';
 import roomsState from './roomsState.js';
-import User from './userClass.js';
+import User from './user.js';
 
 const PORT = process.env.PORT || 3500;
 const SERVER_MSG_TAG = '[SERVER]';
@@ -95,7 +95,6 @@ io.on('connection', (socket) => {
     if (room) {
       const user = room.getUserByUserId(userId);
       user.setTeam(team)
-      console.log(user);
       
       // Update the user list for that room
       io.to(room.roomId).emit('userList', {
@@ -109,6 +108,10 @@ io.on('connection', (socket) => {
     const room = roomsState.getRoomByRoomId(roomId);
     try {
       room.initializeGame(roomId);
+      // Update the user list for that room (hands have been updated);
+      io.to(room.roomId).emit('userList', {
+        users: room.getUserList()
+      });
       // Alert all users in the room that the game has started
       io.to(room.roomId).emit('startGameSuccess')
     } catch (error) {

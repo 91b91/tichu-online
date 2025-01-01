@@ -22,24 +22,24 @@ export function UserProvider({ children }) {
     return userList.find(user => user.userId === userId) || null;
   }, [userList, userId]);
 
+  const value = {
+    username,
+    setUsername,
+    userId,
+    setUserId,
+    roomName,
+    setRoomName,
+    messages,
+    userList,
+    sendMessage,
+    joinRoom,
+    updateUsersTeam,
+    startGameInRoom,
+    currentUser,
+  }
+
   return (
-    <UserContext.Provider
-      value={{
-        username,
-        setUsername,
-        userId,
-        setUserId,
-        roomName,
-        setRoomName,
-        messages,
-        userList,
-        sendMessage,
-        joinRoom,
-        updateUsersTeam,
-        startGameInRoom,
-        currentUser, // Expose currentUser
-      }}
-    >
+    <UserContext.Provider value={value}>
       {children}
     </UserContext.Provider>
   );

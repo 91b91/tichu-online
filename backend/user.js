@@ -1,6 +1,7 @@
 class User {
   team = 'Not Selected'
   isPartyLeader = false;
+  hand = [];  // Initialize as empty array
 
   constructor(name, userId, socketId) {
     this.name = name;
@@ -15,13 +16,29 @@ class User {
   setTeam(team) {
     this.team = team;
   }
-  
+
   getIsPartyLeader() {
     return this.isPartyLeader;
   }
 
   setIsPartyLeader(isPartyLeader) {
     this.isPartyLeader = isPartyLeader;
+  }
+
+  getHand() {
+    return this.hand;
+  }
+
+  setHand(cards) {
+    this.hand = cards;
+  }
+
+  addToHand(card) {
+    this.hand.push(card);
+  }
+
+  removeFromHand(cardId) {
+    this.hand = this.hand.filter(card => card.id !== cardId);
   }
 }
 

@@ -1,9 +1,14 @@
 import React from "react";
 import { Hand } from "../components/Hand";
+import { CardSelectionProvider } from '../contexts/CardSelectionContext';
+import { ActionButtons } from "../components/ActionButtons";
 
 function GamePage() {
   return(
-    <Hand></Hand>
+    <CardSelectionProvider>
+      <Hand></Hand>
+      <ActionButtons></ActionButtons>
+    </CardSelectionProvider>
   )
 }
 
