@@ -4,8 +4,10 @@ import { Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import LobbyPage from "./pages/LobbyPage";
 import GamePage from "./pages/GamePage";
+import { testSharedCode } from '@shared/validation';
 
 function App() {
+  console.log('Frontend test:', testSharedCode());
 
   useEffect(() => {
     const targetPath = "/"; //

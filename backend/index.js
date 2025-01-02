@@ -5,6 +5,10 @@ import roomsState from './roomsState.js';
 import User from './user.js';
 import Play from './play.js'
 
+// TEST SHARED FOLDER IS WORKING
+import { testSharedCode } from '../shared/validation/index.js';
+console.log('Backend test:', testSharedCode());
+
 const PORT = process.env.PORT || 3500;
 const SERVER_MSG_TAG = '[SERVER]';
 

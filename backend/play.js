@@ -2,7 +2,7 @@ import { DECK_CARDS } from './constants/cards.js'
 
 class Play {
   #userId;
-  #cards; 
+  #cards;
 
   constructor(userId, cards = []) {
       this.#userId = userId;
@@ -52,6 +52,10 @@ class Play {
   doesBeatPlay(playToBeat) {
     // TO-DO
     return true;
+  }
+
+  analyzeTichuPlay(cards) {
+
   }
 } 
 
