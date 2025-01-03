@@ -118,13 +118,6 @@ function isStraight(cards) {
 
   const sortedCards = sortCards(cards);
 
-  // Phoenix cannot follow an Ace in a straight
-  const lastCard = sortedCards[cards.length - 1];
-  const secondLastCard = sortedCards[cards.length - 2];
-  if (secondLastCard.value === 'A' && lastCard.value === 'Phoenix') {
-    return false;
-  }
-
   // Check if ranks are consecutive
   return isConsecutiveRanks(sortedCards);
 }
@@ -162,7 +155,9 @@ function isFullHouse(cards) {
 
 
 function isConsecutiveDoubles(cards) {
-  if (cards.length % 2 !== 0 || containsNonPhoenixSpecial(cards)) {
+  if (cards.length < 4
+    || cards.length % 2 !== 0 
+    || containsNonPhoenixSpecial(cards)) {
     return false;
   }
 
@@ -174,11 +169,6 @@ function isConsecutiveDoubles(cards) {
       return acc;
     }, {})
   );
-
-  // There must be at least 2 groups
-  if (groupedByRank.length < 2) {
-    return false;
-  }
 
   // Sort groups by rank
   const groupedByRankSorted = groupedByRank.sort(
