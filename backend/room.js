@@ -95,7 +95,7 @@ class Room {
     users.forEach((user, index) => {
       const startIndex = index * cardsPerPlayer;
       const userCards = shuffledDeck.slice(startIndex, startIndex + cardsPerPlayer);
-      user.setHand(userCards);
+      user.setHand(userCards.sort((a, b) => a.rank - b.rank));
     });
   }
 
