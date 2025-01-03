@@ -19,8 +19,16 @@ function GamePage() {
           <div className="grid-item">opposition-right-grid-item</div>
           
           {/* Bottom rows */}
-          <div className="grid-item grid-item-bottom">user-player-grid-item</div>
-          <div className="grid-item grid-item-bottom">chat</div>
+          <div className="grid-item grid-item-bottom">
+            <div className="flex-wrapper">
+              <div className="item">item</div>
+              <div className="left-item">item-left</div>
+              <div className="right-item">item-right</div>
+            </div>
+          </div>
+          <div className="grid-item grid-item-bottom">
+            grid-item-bottom
+          </div>
         </div>
       </div>
     </CardSelectionProvider>

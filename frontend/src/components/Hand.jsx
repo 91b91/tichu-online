@@ -101,31 +101,29 @@ export function Hand() {
   };
 
   return (
-    <div>
-      <div className="hand-container">
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
+    <div className="hand-container">
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={cards.map(card => card.id)}
+          strategy={horizontalListSortingStrategy}
         >
-          <SortableContext
-            items={cards.map(card => card.id)}
-            strategy={horizontalListSortingStrategy}
-          >
-            <div className="cards-row">
-              {cards.map((card, index) => (
-                <SortableCard
-                  key={card.id}
-                  card={card}
-                  index={index}
-                  totalCards={cards.length}
-                  onCardClick={(e) => handleCardClick(index, e)}
-                />
-              ))}
-            </div>
-          </SortableContext>
-        </DndContext>
-      </div>
+          <div className="cards-row">
+            {cards.map((card, index) => (
+              <SortableCard
+                key={card.id}
+                card={card}
+                index={index}
+                totalCards={cards.length}
+                onCardClick={(e) => handleCardClick(index, e)}
+              />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
     </div>
   );
 }
@@ -140,12 +138,9 @@ const SortableCard = ({ card, index, totalCards, onCardClick }) => {
     isDragging,
   } = useSortable({ id: card.id });
 
-  const style = {
+  const cardStyle = {
     transform: CSS.Transform.toString(transform),
     transition,
-    position: 'relative',
-    zIndex: isDragging ? 9999 : index,
-    marginLeft: index === 0 ? '0' : '-88px',
   };
 
   const handleClick = (e) => {
@@ -156,10 +151,13 @@ const SortableCard = ({ card, index, totalCards, onCardClick }) => {
   return (
     <div
       ref={setNodeRef}
-      style={style}
       {...attributes}
       {...listeners}
-      className={`card-wrapper ${card.selected ? 'selected' : ''}`}
+      className={`card-wrapper ${card.selected ? 'selected' : ''} ${
+        isDragging ? 'dragging' : ''
+      }`}
+      style={cardStyle}
+      data-index={index}
     >
       <img
         src={card.imagePath}
@@ -170,4 +168,4 @@ const SortableCard = ({ card, index, totalCards, onCardClick }) => {
       />
     </div>
   );
-}
+};

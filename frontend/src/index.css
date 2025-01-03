@@ -341,98 +341,12 @@
   color: var(--soft-grey-colour);
 }
 
-/* ---- HAND ---- */
 
-.hand-container {
-  padding: 16px;
-  display: flex;
-  justify-content: center;
-  min-height: 150px;
-}
-
-.cards-row {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  padding: 20px;
-}
-
-.card-wrapper {
-  cursor: grab;
-}
-
-.card-wrapper:focus {
-  outline: none;
-}
-
-.card-wrapper.selected .card-image {
-  filter: brightness(75%);
-  outline: none;
-  transform: translateY(-10px);
-}
-
-.card-image {
-  height: 165px; /* Set the width */
-  aspect-ratio: 5 / 7; /* Maintain aspect ratio of 5:7 */
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-  transition: filter 0.2s ease-out;
-  object-fit: cover; /* Ensure the image fits within the element */
-}
-
-.selected-cards {
-  text-align: center;
-  padding: 10px;
-  color: #666;
-  font-size: 14px;
-}
-
-/* ---- SELECTED CARDS DISPLAY ---- */
-
-/* Update the container to also handle overflow properly */
-.action-button-container {
-  display: grid;
-  grid-template-rows: 2fr 1fr 1fr;
-  gap: 5px;
-  height: 165px;
-  max-width: 170px;
-  min-width: 0;     /* Add this to allow children to shrink */
-}
-
-
-/* First, ensure the play button constrains its children */
-.play-button {
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;    /* Make sure the button takes full width */
-  min-width: 0;   /* Allow the button to shrink below its content's width */
-}
-
-/* Then, make sure SelectedCardsDisplay is properly constrained */
-.selected-cards-display {
-  background-color: var(--softer-grey-colour);
-  color: var(--soft-grey-colour);
-  border-radius: 5px;
-  padding: 5px 10px;
-  height: 22px;
-  margin-top: 4px;
-  /* Remove width: 100% */
-  max-width: 100%; /* Keep this to ensure it doesn't overflow parent */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  box-sizing: border-box;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+/* |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
+/* |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
+/* |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
 
 /* ---- GAME PAGE GRID ---- */
-/* Reset default margins and ensure full viewport height */
 body {
   margin: 0;
   padding: 0;
@@ -442,9 +356,8 @@ body {
   color: var(--main-text-colour);
 }
 
-/* Create a wrapper div for centering */
 .game-page-wrapper {
-  width: 80%;
+  width: clamp(200px, 80%, 1000px);
   margin: 0 auto;
   padding: 20px;
 }
@@ -452,40 +365,61 @@ body {
 .game-grid-container {
   display: grid;
   grid-template-columns: 1fr 1.2fr 1fr;
-  grid-template-rows: 1.1fr 1.3fr 1.1fr 1.1fr; /* Last row is twice as tall */
+  grid-template-rows: 1.1fr 1.3fr 1.1fr 1.1fr;
   gap: 0px;
   height: 900px;
   background-color: #1a1a1a;
 }
 
 .grid-item {
+  display: flex;
+  justify-content: center; /* Centered on main axis (horizontally) */
+  align-items: center; /* Centered on cross axis (veritcally) */
   border: 2px solid purple;
   border-radius: 0.5rem;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  background-color: #1f2937;
+  font-size: clamp(10px, 2vw, 16px); /* Adjust min, preferred, and max size */
 }
 
 .grid-item-bottom {
   grid-column: span 3;
 }
 
-.grid-item:hover {
-  border-color: #9333ea;
-  background-color: #374151;
-  transition: all 0.2s ease-in-out;
+.flex-wrapper {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 100%;
+  background-color: rgba(0, 0, 255, 0.278);
+  border: 2px solid yellow;
 }
 
-@media (max-width: 800px) {
-  .game-page-wrapper {
-    width: 95%;
-  }
-  
-  .game-grid-container {
-    height: 800px;
-    font-size: 0.8em;
-  }
+.left-item {
+  background-color: blue;
+  width: 50px;
+  height: 50px;
 }
+
+.right-item {
+  background-color: red;
+  width: 50px;
+  height: 50px;
+}
+
+
+
+
+
+
+.play-area-container {
+  display: flex;
+  align-items: center;
+  /* Remove justify-content: center so things align naturally from the left */
+  gap: 20px;
+  width: 100%;
+  height: 100%;
+  padding: 0 20px; /* Add some padding on the sides */
+}
+
+
