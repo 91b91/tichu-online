@@ -13,16 +13,6 @@
 
 
 /* ---- GLOBAL STYLES ---- */
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Aptos', sans-serif;
-  background-color: var(--background-colour);
-  color: var(--main-text-colour);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
 
 .regular-title {
   font-size: 1.4rem;
@@ -442,18 +432,30 @@ body {
 }
 
 /* ---- GAME PAGE GRID ---- */
+/* Reset default margins and ensure full viewport height */
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: 'Aptos', sans-serif;
+  background-color: var(--background-colour);
+  color: var(--main-text-colour);
+}
+
+/* Create a wrapper div for centering */
+.game-page-wrapper {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+}
 
 .game-grid-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  gap: 16px;
-  padding: 16px;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  grid-template-rows: 1.1fr 1.3fr 1.1fr 1.1fr; /* Last row is twice as tall */
+  gap: 0px;
   height: 900px;
-  width: 100%; /* Changed to viewport width */
   background-color: #1a1a1a;
-  box-sizing: border-box;
-  align-self: stretch; /* Add this */
 }
 
 .grid-item {
@@ -464,16 +466,26 @@ body {
   align-items: center;
   justify-content: center;
   color: white;
-  background-color: #1f2937; /* Equivalent to bg-gray-800 */
+  background-color: #1f2937;
 }
 
 .grid-item-bottom {
   grid-column: span 3;
 }
 
-/* Optional: Add hover effects */
 .grid-item:hover {
-  border-color: #9333ea; /* Brighter purple on hover */
-  background-color: #374151; /* Slightly lighter background on hover */
+  border-color: #9333ea;
+  background-color: #374151;
   transition: all 0.2s ease-in-out;
+}
+
+@media (max-width: 800px) {
+  .game-page-wrapper {
+    width: 95%;
+  }
+  
+  .game-grid-container {
+    height: 800px;
+    font-size: 0.8em;
+  }
 }
