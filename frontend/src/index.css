@@ -14,14 +14,14 @@
 
 /* ---- GLOBAL STYLES ---- */
 body {
-  margin: 0; 
-  padding: 0; 
-  font-family: 'Aptos', sans-serif; 
-  background-color: var(--background-colour); 
-  color: var(--main-text-colour); 
+  margin: 0;
+  padding: 0;
+  font-family: 'Aptos', sans-serif;
+  background-color: var(--background-colour);
+  color: var(--main-text-colour);
+  min-height: 100vh;
   display: flex;
-  justify-content: center; 
-  height: 100vh;
+  flex-direction: column;
 }
 
 .regular-title {
@@ -100,6 +100,7 @@ body {
   text-align: center;
   position: relative;
   border: 1.6px solid #282828;
+  justify-self: center;
 }
 
 .basic-container::before {
@@ -143,6 +144,7 @@ body {
   text-align: center; 
   box-shadow: 0 0 70px 2px var(--primary-red-colour);
   border: 1.6px solid var(--softest-grey-colour);
+  justify-self: center;
 }
 
 /* ---- LOBBY PAGE ---- */
@@ -437,4 +439,41 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* ---- GAME PAGE GRID ---- */
+
+.game-grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 16px;
+  padding: 16px;
+  height: 900px;
+  width: 100%; /* Changed to viewport width */
+  background-color: #1a1a1a;
+  box-sizing: border-box;
+  align-self: stretch; /* Add this */
+}
+
+.grid-item {
+  border: 2px solid purple;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background-color: #1f2937; /* Equivalent to bg-gray-800 */
+}
+
+.grid-item-bottom {
+  grid-column: span 3;
+}
+
+/* Optional: Add hover effects */
+.grid-item:hover {
+  border-color: #9333ea; /* Brighter purple on hover */
+  background-color: #374151; /* Slightly lighter background on hover */
+  transition: all 0.2s ease-in-out;
 }
