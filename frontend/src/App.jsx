@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect } from "react"
 import { Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage";
+import JoinPage from "./pages/JoinPage";
 import LobbyPage from "./pages/LobbyPage";
 import GamePage from "./pages/GamePage";
 import { testSharedCode } from '@shared/validation';
@@ -18,7 +18,7 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
+      <Route path="/" element={<JoinPage />} />
       <Route path="/lobby" element={<LobbyPage />} />
       <Route path="/game" element={<GamePage />} />
     </Routes>

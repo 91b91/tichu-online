@@ -1,0 +1,27 @@
+.basic-red-button {
+  width: 100%;
+  padding: 10px;
+  border: none; 
+  border-radius: 6px; 
+  background-color: var(--primary-red-colour); 
+  color: var(--main-text-colour); 
+  font-size: 16px;
+  cursor: pointer; 
+  transition: all 0.3s ease;
+}
+
+.basic-red-button:hover {
+  background-color: var(--primary-darker-red-colour);
+  transform: scale(1.01); 
+  box-shadow: 0 0 6px var(--primary-red-colour); 
+}
+
+.basic-red-button:active {
+  background-color: var(--primary-darker-red-colour); 
+  transform: scale(0.99);
+}
+
+.basic-red-button:focus {
+  outline: none;
+  box-shadow: 0 0 6px var(--primary-red-colour); 
+}

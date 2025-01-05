@@ -1,7 +1,7 @@
 import React from "react";
 import { JoinInput } from "../components/JoinInput";
 
-function HomePage() {
+function JoinPage() {
 
   return (
     <div>
@@ -10,4 +10,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default JoinPage;

@@ -1,6 +1,8 @@
 import React from "react";
 import { Hand } from "../components/Hand";
 import { CardSelectionProvider } from '../contexts/CardSelectionContext';
+import { ChatDisplay } from '../components/ChatDisplay';
+import { ChatInput } from "../components/ChatInput";
 import { ActionButtons } from "../components/ActionButtons";
 
 function GamePage() {
@@ -20,14 +22,19 @@ function GamePage() {
           
           {/* Bottom rows */}
           <div className="grid-item grid-item-bottom">
-            <div className="flex-wrapper">
-              <div className="item">item</div>
-              <div className="left-item">item-left</div>
-              <div className="right-item">item-right</div>
+            <div className="bottom-grid-container">
+              <div className="grid-item">1</div>
+              <div className="grid-item">
+                <Hand />
+                <ActionButtons />
+              </div>
             </div>
           </div>
           <div className="grid-item grid-item-bottom">
-            grid-item-bottom
+            <div className="basic-container chat-container"> 
+              <ChatDisplay /> 
+              <ChatInput />  
+            </div>
           </div>
         </div>
       </div>

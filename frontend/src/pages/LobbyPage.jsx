@@ -30,10 +30,10 @@ function LobbyPage() {
         <p className="regular-title">Welcome to <strong>{roomName}</strong> </p>
         <RoomLink />
         <PlayerList />
-        <button onClick={handleStartGame} className="basic-red-button">Start Game</button>
+        <button onClick={handleStartGame} className="basic-red-button start-game-button">Start Game</button>
         {error && <ErrorMessage errorText={error}/>}
       </div>
-      <div className="basic-container chat-container"> 
+      <div className="basic-container join-chat-container"> 
         <ChatDisplay /> 
         <ChatInput />  
       </div>

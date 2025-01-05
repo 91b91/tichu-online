@@ -1,0 +1,71 @@
+/* Main Chat Container Styles */
+.chat-container {
+  width: 100%;
+  min-width: 0;
+  margin-top: 0;
+}
+
+.basic-container.chat-container::before {
+  box-shadow: 0 0 0 2px var(--shadow-on-background-colour);
+}
+
+.basic-container.join-chat-container {
+  margin-top: 1rem;
+}
+
+/* Chat Display Area */
+.chat-display {
+  height: 140px;
+  overflow-y: scroll;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: var(--softer-grey-colour) transparent;
+}
+
+/* Scrollbar Styles (Chrome, Safari, Edge) */
+.chat-display::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-display::-webkit-scrollbar-thumb {
+  background-color: var(--softer-grey-colour);
+  border-radius: 4px;
+}
+
+.chat-display::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Chat Messages List */
+.chat-messages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+/* Individual Message Styles */
+.chat-message {
+  margin-bottom: 0.15rem;
+}
+
+.chat-message-header {
+  color: var(--primary-red-colour);
+  font-weight: bold;
+  margin-right: 4px;
+}
+
+.chat-message-body-dull {
+  color: var(--soft-grey-colour);
+}
+
+.chat-message-body-regular {
+  color: var(--softer-text-colour);
+}
+
+/* Chat Input Field */
+.input-field.chat-input-field {
+  height: 30px;
+  color: var(--soft-grey-colour);
+  padding-left: 0.34rem;
+  margin-top: 0.28rem;
+}

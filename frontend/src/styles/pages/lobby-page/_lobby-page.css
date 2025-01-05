@@ -1,0 +1,79 @@
+.lobby-container {
+  margin-top: 50px;
+}
+
+.room-link-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.room-link-text {
+  font-size: 1rem;
+  color: var(--soft-grey-colour); /* Subtle grey text */
+  margin-bottom: 12px;
+}
+.room-link-wrapper {
+  display: flex;
+  align-items: stretch; /* Stretch children to height */
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  border: none;
+  height: 40px; 
+  transition: box-shadow 0.3s ease, border-color 0.3s ease; /* Smooth transitions */
+}
+
+.room-link-input {
+  flex: 1; /* Input should take up remaining space */
+  padding: 10px;
+  background-color: var(--softest-grey-colour);
+  color: var(--soft-grey-colour);
+  border: 1.5px solid var(--softer-grey-colour);
+  border-radius: 5px 0px 0px 5px;
+  font-size: 0.9rem;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+  border-right: none;
+  transition: border-color 0.3s ease; /* Smooth transition */
+}
+
+.room-link-input:focus {
+  outline: none;
+  border-color: var(--primary-red-colour);
+}
+
+.room-link-button {
+  border: 1.5px solid var(--primary-darker-red-colour);
+  border-radius: 0px 5px 5px 0px;
+  cursor: pointer;
+  padding: 0 8px;
+  box-sizing: border-box;
+  width: 9%;
+  transition: all 0.3s ease;
+}
+
+.room-link-button:hover {
+  transform: scale(1.02);
+  background-color: var(--primary-red-colour);
+}
+
+.room-link-button:active {
+  transform: scale(0.98);
+}
+
+.room-link-button:focus {
+  border-color: var(--primary-red-colour);
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+}
+
+.basic-red-button.start-game-button {
+  height: 48px;
+  font-size: 1.1em;
+}

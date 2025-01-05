@@ -1,0 +1,32 @@
+:root {
+  --background-colour: rgb(29, 29, 32);         /* Your new background */
+  --shadow-on-background-colour: rgb(22, 25, 27); /* Darker version of background */
+  --container-background-colour: rgb(20, 22, 24); /* Mid-tone between shadow and background */
+  --container-border-colour: rgb(31, 32, 35);
+  --main-text-colour: #ffffff;                  /* Keeping white for contrast */
+  --softer-text-colour: #d3d3d3; 
+  --soft-grey-colour: #656767;                 /* Lighter grey with slight blue tint */
+  --softer-grey-colour: rgb(32, 35, 36);       /* Slightly lighter than background */
+  --softest-grey-colour: rgb(25, 28, 30);      /* Between shadow and container */
+  --primary-lighter-red-color: #990012;
+  --primary-red-colour: #990012;               /* Keeping your red */
+  --primary-darker-red-colour: #79000e;        /* Keeping your darker red */
+  --background-pale-red-colour: #ffd5cd;       /* Keeping your pale red */
+
+  /* Base font sizes */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --font-size-xs: 0.7rem;
+    --font-size-sm: 0.8rem;
+    --font-size-base: 0.9rem;
+    --font-size-lg: 1rem;
+    --font-size-xl: 1.25rem;
+  }
+}

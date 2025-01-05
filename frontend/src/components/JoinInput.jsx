@@ -72,7 +72,7 @@ export function JoinInput() {
           className="input-field"
         />
         <p className="muted-text">Other players can join using the same room name on their device</p>
-        <button type="submit" className="basic-red-button">Join Room</button>
+        <button type="submit" className="basic-red-button join-button">Join Room</button>
       </div>
       {error && <ErrorMessage errorText={error} />} {/* Display the error message if it exists */}
     </form>

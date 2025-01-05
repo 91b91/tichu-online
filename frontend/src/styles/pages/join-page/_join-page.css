@@ -1,0 +1,14 @@
+.join-form {
+  background-color: var(--container-background-colour);; 
+  border-radius: 10px; 
+  margin: 72px auto;
+  padding: 28px;
+  width: clamp(364px, 45%, 450px);
+  text-align: center; 
+  box-shadow: 0 0 60px 1px var(--primary-red-colour);
+  border: 1.6px solid var(--softest-grey-colour);
+}
+
+.basic-red-button.join-button {
+  height: 45px;
+}
