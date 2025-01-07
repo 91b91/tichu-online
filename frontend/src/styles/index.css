@@ -6,6 +6,7 @@
 /* Components */
 @import './components/_player-card.css';
 @import './components/_chat.css';
+@import './components/_player-tile.css';
 
 /* ---- Join Page ---- */
 @import './pages/join-page/_join-page.css';

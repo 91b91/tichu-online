@@ -2,9 +2,9 @@
   display: grid;
   grid-template-rows: 2fr 1.2fr 1.2fr;
   gap: 6px;
-  height: 88%;
+  height: 188px;
   width: clamp(200px, 30%, 220px);
-  min-width: 0;
+  min-width: 0;  /* Ensure grid container allows children to shrink */
   margin-left: 8px;
 }
 
@@ -22,8 +22,8 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+  min-width: 0;  /* Critical for flex container to allow text truncation */
   border-radius: 5px;
-  min-width: 0;
 }
 
 .selected-cards-display {
@@ -32,8 +32,9 @@
   border-radius: 5px;
   padding: 5px 10px;
   height: 22px;
-  margin-top: 4px;
-  max-width: 100%;
+  margin-top: 4px; /* Ensure full width */
+  min-width: 0;     /* Allow content to shrink */
+  max-width: 100%;  /* Prevent overflow */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
