@@ -1,6 +1,7 @@
 import Room from './room.js'
 
-const roomsState = {
+// singleton
+const RoomRegistary = {
   rooms: {},
   socketToRoomMap: {},
 
@@ -51,5 +52,5 @@ const roomsState = {
 
 }
 
-export default roomsState;
+export default RoomRegistary;
 

@@ -1,7 +1,7 @@
 // backedn index.js
 import express from 'express';
 import { Server } from 'socket.io';
-import roomsState from './roomsState.js';
+import RoomRegistary from './RoomRegistary.js';
 import User from './user.js';
 import Play from './play.js'
 
@@ -34,10 +34,10 @@ io.on('connection', (socket) => {
     console.log(`User with userId: ${userId} wants to join room: ${room}`);
 
     // Handle leaving the previous room
-    const prevRoom = roomsState.getRoomBySocket(socket.id);
+    const prevRoom = RoomRegistary.getRoomBySocket(socket.id);
     if (prevRoom) {
       socket.leave(prevRoom.roomId);
-      roomsState.removeUserFromRoom(prevRoom.roomId, socket.id);
+      RoomRegistary.removeUserFromRoom(prevRoom.roomId, socket.id);
 
       io.to(prevRoom.roomId).emit('message', 
         buildMsg(SERVER_MSG_TAG, name, 'has left the room')
@@ -52,14 +52,14 @@ io.on('connection', (socket) => {
     const user = new User(name, userId, socket.id);
     try {
       // Try to add the user (Error when duplicate name OR full capacity)
-      roomsState.addUserToRoom(room, user);
+      RoomRegistary.addUserToRoom(room, user);
       socket.join(room);
       socket.emit('roomJoinSuccess');
 
       // Notify users in the new room
       io.to(room).emit('message', buildMsg(SERVER_MSG_TAG, name, 'has joined the room'));
       io.to(room).emit('userList', {
-        users: roomsState.rooms[room].getUserList()
+        users: RoomRegistary.rooms[room].getUserList()
       });
     } catch (error) {
       socket.emit('roomJoinError', error.message);
@@ -68,10 +68,10 @@ io.on('connection', (socket) => {
 
   // ---- DISCONNECTING ----
   socket.on('disconnect', () => {
-    const room = roomsState.getRoomBySocket(socket.id);
+    const room = RoomRegistary.getRoomBySocket(socket.id);
     if (room) {
       const user = room.getUserBySocketId(socket.id);
-      roomsState.removeUserFromRoom(room.roomId, socket.id);
+      RoomRegistary.removeUserFromRoom(room.roomId, socket.id);
 
       // Notify the room of the user leaving
       io.to(room.roomId).emit('message', buildMsg(SERVER_MSG_TAG, user?.name 
@@ -88,7 +88,7 @@ io.on('connection', (socket) => {
 
   // ---- MESSAGES FROM USERS ----
   socket.on('message', (data) => {
-    const room = roomsState.getRoomBySocket(socket.id);
+    const room = RoomRegistary.getRoomBySocket(socket.id);
     if (room) {
       io.to(room.roomId).emit('message', data);
     }
@@ -96,7 +96,7 @@ io.on('connection', (socket) => {
 
   // ---- USER TEAM UPDATES ----
   socket.on('updateUsersTeam', ({ userId, team }) => {
-    const room = roomsState.getRoomBySocket(socket.id);
+    const room = RoomRegistary.getRoomBySocket(socket.id);
     if (room) {
       const user = room.getUserByUserId(userId);
       user.setTeam(team)
@@ -110,7 +110,7 @@ io.on('connection', (socket) => {
 
   // ---- START GAME REQUEST ----
   socket.on('startGameRequest', ({ roomId }) => {
-    const room = roomsState.getRoomByRoomId(roomId);
+    const room = RoomRegistary.getRoomByRoomId(roomId);
     try {
       room.initializeGame(roomId);
       // Update the user list for that room (hands have been updated);
@@ -126,7 +126,7 @@ io.on('connection', (socket) => {
 
   // ---- PLAY SELECTED CARDS REQUEST ----
   socket.on('playSelectedCardsRequest', ({ userId, selectedCards }) => {
-    const room = roomsState.getRoomByUserId(userId);
+    const room = RoomRegistary.getRoomByUserId(userId);
     if (!room) {
       console.log('OH NO');
       return;

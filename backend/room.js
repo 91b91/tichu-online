@@ -4,6 +4,7 @@ class Room {
   static MAX_CAPACITY = 4;
   users = [];
   playStack=[];
+  currentPlayerTurnIndex = null;
 
   constructor(roomId) {
     this.roomId = roomId;
@@ -38,7 +39,7 @@ class Room {
     return this.users.find(user => user.socketId === socketId);
   }
 
-  // This should only be called directly by roomsState.js so it can handle updating the state.
+  // This should only be called directly by RoomRegistary.js so it can handle updating the state.
   removeUserBySocketId(socketId) {
     const removedUser = this.getUserBySocketId(socketId)
 
