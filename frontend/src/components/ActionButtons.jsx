@@ -3,11 +3,11 @@ import { useUser } from "../contexts/UserContext";
 import { useCardSelection } from '../contexts/CardSelectionContext'
 import { SelectedCardsDisplay } from './SelectedCardsDisplay';
 import { ErrorMessage } from './ErrorMessage';
-import { categorizePlay } from '@shared/validation';
+import { categorizePlay } from '@shared/game/play-validation';
 
 export function ActionButtons() {
   const { selectedCards } = useCardSelection();
-  const { currentUser, playSelectedCards, playStack } = useUser();
+  const { currentUser, playSelectedCards, callTichu } = useUser();
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -29,6 +29,10 @@ export function ActionButtons() {
     }
   }
 
+  async function handleCallTichu() {
+    await callTichu(currentUser.userId);
+  }
+
   return (
     <div className="action-button-container">
       <button 
@@ -39,7 +43,12 @@ export function ActionButtons() {
         <SelectedCardsDisplay></SelectedCardsDisplay>
       </button>
       <button className="basic-red-button action-button">Pass</button>
-      <button className="basic-red-button action-button">Tichu</button>
+      <button 
+        onClick={handleCallTichu}
+        className="basic-red-button action-button"
+      >
+        Tichu
+      </button>
       {error && <ErrorMessage errorText={error}/>}
     </div>
   );

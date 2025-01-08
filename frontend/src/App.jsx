@@ -4,9 +4,11 @@ import { Routes, Route } from "react-router-dom";
 import JoinPage from "./pages/JoinPage";
 import LobbyPage from "./pages/LobbyPage";
 import GamePage from "./pages/GamePage";
-import { testSharedCode } from '@shared/validation';
+import { testSharedCode } from '@shared/game/play-validation';
+import { useUser } from "./contexts/UserContext";
 
 function App() {
+
   console.log('Frontend test:', testSharedCode());
 
   useEffect(() => {

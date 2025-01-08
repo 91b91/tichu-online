@@ -111,5 +111,23 @@ export function useSocket(url) {
     })
   }
 
-  return { messages, userList, sendMessage, joinRoom, updateUsersTeam, startGameInRoom, playSelectedCards, playStack };
+  function callTichu(userId) {
+    return new Promise((resolve, reject) => {
+      if (socket) {
+        socket.emit("callTichuRequest", ({ userId }));
+
+        socket.once("callTichuError", (errorMessage) => {
+          reject(new Error(errorMessage));
+        })
+
+        socket.once("callTichuSuccess", () => {
+          resolve();
+        });
+      } else {
+        reject(new Error("Socket not initialized."));
+      }
+    })
+  }
+
+  return { messages, userList, sendMessage, joinRoom, updateUsersTeam, startGameInRoom, playSelectedCards, playStack, callTichu };
 }

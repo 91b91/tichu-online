@@ -57,6 +57,7 @@ class Room {
         name: user.name,
         team: user.team,
         isPartyLeader: user.getIsPartyLeader(),
+        isTichu: user.isTichu,
         hand: user.getHand()
       }
     ));
@@ -71,6 +72,7 @@ class Room {
     }
 
     this.dealCards(this.users, DECK_CARDS);
+    this.initialzeTableOrder();
   }
 
   isValidTeamAssignment() {
@@ -99,6 +101,19 @@ class Room {
       user.setHand(userCards.sort((a, b) => a.rank - b.rank));
     });
   }
+
+  initialzeTableOrder() {
+    const team1 = this.users.filter(user => user.team === 'Team 1');
+    const team2 = this.users.filter(user => user.team === 'Team 2');
+
+    if (team1.length !== 2 || team2.length !== 2) {
+        throw new Error('Invalid input: users array must contain exactly 2 members from each team.');
+    }
+
+    // Arrange in the desired order [Team 1, Team 2, Team 1, Team 2]
+    this.users = [team1[0], team2[0], team1[1], team2[1]];
+    return this.users;
+}
 
   // DO THESE FOLLOWING FUNCTIONS LOOK OK??? 
   addToPlayStack(play) {

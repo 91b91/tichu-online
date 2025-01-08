@@ -6,7 +6,7 @@ import User from './user.js';
 import Play from './play.js'
 
 // TEST SHARED FOLDER IS WORKING
-import { testSharedCode } from '../shared/validation/index.js';
+import { testSharedCode } from '../shared/game/play-validation.js';
 console.log('Backend test:', testSharedCode());
 
 const PORT = process.env.PORT || 3500;
@@ -145,6 +145,24 @@ io.on('connection', (socket) => {
       socket.emit('playSelectedCardsError', error.message);
     }
   });
+
+  // ---- TICHU -----
+  socket.on('callTichuRequest', ({ userId }) => {
+    const room = RoomRegistary.getRoomByUserId(userId);
+    const user = room.getUserByUserId(userId);
+
+    console.log('-------');
+    console.log(user);
+
+    user.callTichu();
+
+    io.to(room.roomId).emit('userList', {
+      users: room.getUserList()
+    });
+
+    socket.emit('callTichuSuccess')
+  });
+
 });
 
 // Helper function to build messages

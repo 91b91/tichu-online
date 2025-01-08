@@ -1,21 +1,21 @@
-import { useUser } from "../contexts/UserContext";
-
-export function PlayerTile({ playerName, tag, cardsRemaining}) {
+export function PlayerTile({ user }) {
   return (
     <div className="player-tile-container">
       <div className="tile-profile-picture">
-        {playerName.charAt(0).toUpperCase()}
+        {user.name.charAt(0).toUpperCase()}
       </div>
       <div className="name-and-tag-container">
         <div className="tile-player-name">
-          {playerName}
+          {user.name}
         </div>
-        <div className="tile-tag">
-          {tag}
-        </div>
+        {user.isTichu && (
+          <div className="tile-tag">
+            Tichu
+          </div>
+        )}
       </div>
       <div className="tile-cards-remaining">
-        {cardsRemaining}
+        {user.hand.length}
       </div>
     </div>
   )

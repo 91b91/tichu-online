@@ -2,6 +2,8 @@ class User {
   team = 'Not Selected'
   isPartyLeader = false;
   hand = [];  // Initialize as empty array
+  isTichu = false;
+  isGrandTichu = false;
 
   constructor(name, userId, socketId) {
     this.name = name;
@@ -39,6 +41,15 @@ class User {
 
   removeFromHand(cardId) {
     this.hand = this.hand.filter(card => card.id !== cardId);
+  }
+
+  callTichu() {
+    this.isTichu = true;
+  }
+
+  callGrandTichu() {
+    this.isTichu = false;
+    this.isGrandTichu = true;
   }
 }
 

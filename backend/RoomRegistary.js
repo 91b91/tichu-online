@@ -48,7 +48,7 @@ const RoomRegistary = {
       }
     }
     return null;
-  }
+  },
 
 }
 

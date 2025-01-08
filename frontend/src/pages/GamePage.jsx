@@ -7,9 +7,13 @@ import { ActionButtons } from "../components/ActionButtons";
 import { PlayerTile } from '../components/PlayerTile';
 
 import { useUser } from "../contexts/UserContext";
+import { getGamePlayers } from "@shared/game/player-categorisation";
 
 function GamePage() {
   const { userList, currentUser } = useUser();
+
+  // Get teammate, left opponent, and right opponent using getGamePlayers
+  const { teammate, leftOpponent, rightOpponent } = getGamePlayers(userList, currentUser);
 
   return (
     <CardSelectionProvider>
@@ -18,39 +22,24 @@ function GamePage() {
           {/* Top row */}
           <div className="grid-item">grid-item</div>
           <div className="grid-item">
-            <PlayerTile
-              playerName={"teammate"}
-              tag={"Tichu"}
-              cardsRemaining={2}
-            />
+            <PlayerTile user={teammate} />
           </div>
           <div className="grid-item">grid-item</div>
           
           {/* Middle row */}
           <div className="grid-item">
-            <PlayerTile
-              playerName={"opposition-left"}
-              tag={"Tichu"}
-              cardsRemaining={1}
-            />
+            <PlayerTile user={leftOpponent} />
           </div>
-          <div className="grid-item">center-grid-item</div>
+          <div className="grid-item center-grid-item"></div>
           <div className="grid-item">
-            <PlayerTile
-              playerName={"opposition-right"}
-              tag={""}
-              cardsRemaining={3}
-            />
+            <PlayerTile user={rightOpponent} />
           </div>
+
           {/* Bottom rows */}
           <div className="grid-item grid-item-bottom">
             <div className="bottom-grid-container">
               <div className="grid-item">
-                <PlayerTile 
-                  playerName={currentUser.name}
-                  tag={"GrandTichu"}
-                  cardsRemaining={currentUser.hand.length}
-                />
+                <PlayerTile user={currentUser} />
               </div>
               <div className="grid-item">
                 <Hand />
