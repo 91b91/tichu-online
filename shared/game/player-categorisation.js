@@ -13,6 +13,7 @@ export function getGamePlayers(userList, currentUser) {
 }
 
   return {
+    player: currentUser,
     teammate: userList[(currentUserIndex + 2) % 4],
     leftOpponent: userList[(currentUserIndex + 1) % 4],
     rightOpponent: userList[(currentUserIndex + 3) % 4]

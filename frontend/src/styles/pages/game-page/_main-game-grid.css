@@ -16,9 +16,14 @@
   display: flex;
   justify-content: center; /* Centered on main axis (horizontally) */
   align-items: center; /* Centered on cross axis (veritcally) */
+  flex-direction: column;
   min-width: 0;
   border: 0.2px solid purple;
   border-radius: 0.5rem;
+}
+
+.grid-item .grid-item-user {
+  flex-direction: row;
 }
 
 .grid-item-bottom {
@@ -31,18 +36,6 @@
   min-width: 0;
   display: grid;
   grid-template-rows: 1fr 4fr;
-}
-
-.item1{
-  height: 100%;
-  width: 400px;
-  background-color: blue;
-}
-
-.item2{
-  height: 100%;
-  width: 24%;
-  background-color: red;
 }
 
 .flex-wrapper {

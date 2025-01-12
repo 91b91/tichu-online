@@ -1,5 +1,4 @@
-// Hand.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from "../contexts/UserContext";
 import { useCardSelection } from '../contexts/CardSelectionContext';
 import {
@@ -27,15 +26,47 @@ export function Hand() {
     updateLastSelectedIndex 
   } = useCardSelection();
 
-  // Initialize cards with server data and add selected property
+  // Maintain a client-side prefered order of the cards
+  const localOrderRef = useRef([]);
+
   useEffect(() => {
     if (currentUser?.hand) {
-      setCards(currentUser.hand.map(card => ({
-        ...card,
-        imagePath: `./card-assets/tichu-card-${card.id}.png`,
-        selected: false,
-        name: `${card.suit} ${card.value}`
-      })));
+      const serverCards = currentUser.hand;
+      
+      // If we don't have a local order yet, initialize it
+      if (localOrderRef.current.length === 0) {
+        localOrderRef.current = serverCards.map(card => card.id);
+      }
+
+      // Create a map of server cards by ID for easy lookup
+      const serverCardsMap = new Map(
+        serverCards.map(card => [card.id, card])
+      );
+
+      // Filter out any IDs that no longer exist in the server cards
+      localOrderRef.current = localOrderRef.current.filter(
+        id => serverCardsMap.has(id)
+      );
+
+      // Add any new cards from the server to the end of local order
+      serverCards.forEach(card => {
+        if (!localOrderRef.current.includes(card.id)) {
+          localOrderRef.current.push(card.id);
+        }
+      });
+
+      // Create the cards array using the local order
+      const orderedCards = localOrderRef.current
+        .map(id => serverCardsMap.get(id))
+        .filter(Boolean)
+        .map(card => ({
+          ...card,
+          imagePath: `./card-assets/tichu-card-${card.id}.png`,
+          selected: false,
+          name: `${card.suit} ${card.value}`
+        }));
+
+      setCards(orderedCards);
     }
   }, [currentUser?.hand]);
 
@@ -65,13 +96,20 @@ export function Hand() {
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
+    
     setCards((cards) => {
       const oldIndex = cards.findIndex(card => card.id === active.id);
       const newIndex = cards.findIndex(card => card.id === over.id);
-      return arrayMove(cards, oldIndex, newIndex);
+      const newCards = arrayMove(cards, oldIndex, newIndex);
+      
+      // Update the local order reference
+      localOrderRef.current = newCards.map(card => card.id);
+      
+      return newCards;
     });
   };
 
+  // Rest of the component remains the same...
   const handleCardClick = (index, event) => {
     if (event.detail === 0) return;
 
@@ -92,7 +130,6 @@ export function Hand() {
         }));
       }
 
-      // Update the selected cards in the context
       selectCards(newCards.filter(card => card.selected));
       return newCards;
     });

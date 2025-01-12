@@ -9,11 +9,11 @@
   --softer-grey-colour: rgb(32, 35, 36);       /* Slightly lighter than background */
   --softest-grey-colour: rgb(25, 28, 30);      /* Between shadow and container */
   --primary-lighter-red-color: #990012;
-  --primary-red-colour: #990012;  
+  --primary-red-colour: #af0418;  
   --primary-gold-colour: #FF9549;             
   
   /* Keeping your red */
-  --primary-darker-red-colour: #79000e;        /* Keeping your darker red */
+  --primary-darker-red-colour: #870110;        /* Keeping your darker red */
   --background-pale-red-colour: #ffd5cd;       /* Keeping your pale red */
 
   /* Base font sizes */

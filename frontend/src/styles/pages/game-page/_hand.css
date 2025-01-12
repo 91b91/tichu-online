@@ -22,7 +22,7 @@
 }
 
 .card-wrapper[data-index]:not([data-index="0"]) {
-  margin-left: -100px;
+  margin-left: -100px; /* amount of overlap */
 }
 
 .card-wrapper.dragging {
@@ -47,12 +47,16 @@
   transform: translateY(-10px);
 }
 
+.card-wrapper .card-image:hover {
+  transform: translateY(-10px);
+}
+
 .card-image {
   height: 188px;
   aspect-ratio: 5 / 7;
   border-radius: 5px;
   box-shadow: -1px 0 4px rgba(0, 0, 0, 0.4);
-  transition: filter 0.2s ease-out;
+  transition: all 0.1s ease;
   object-fit: cover;
 }
 

@@ -17,7 +17,6 @@ export function UserProvider({ children }) {
     console.log(uuid);
   }, []);
 
-  // Derive the current user from the userList based on userId
   const currentUser = useMemo(() => {
     return userList.find(user => user.userId === userId) || null;
   }, [userList, userId]);

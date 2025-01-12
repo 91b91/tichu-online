@@ -1,0 +1,23 @@
+.other-player-cards {
+  margin: 10px;
+  display: flex;
+  padding: 0;
+}
+
+.facedown-card-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.facedown-card-wrapper[data-index]:not([data-index="0"]) {
+  margin-left: -90px; /* Smaller overlap for smaller cards */
+}
+
+.facedown-card-image {
+  height: 134px;
+  aspect-ratio: 5 / 7;
+  border-radius: 5px;
+  box-shadow: -1px 0 4px rgba(0, 0, 0, 0.4);
+  object-fit: cover;
+}

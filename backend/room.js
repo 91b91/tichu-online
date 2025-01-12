@@ -99,6 +99,7 @@ class Room {
       const startIndex = index * cardsPerPlayer;
       const userCards = shuffledDeck.slice(startIndex, startIndex + cardsPerPlayer);
       user.setHand(userCards.sort((a, b) => a.rank - b.rank));
+      user.setHand(userCards);
     });
   }
 
