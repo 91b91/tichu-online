@@ -1,3 +1,4 @@
+// Types (could be moved to separate types.ts file)
 import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from "../contexts/UserContext";
 import { useCardSelection } from '../contexts/CardSelectionContext';
@@ -16,6 +17,70 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
+// Constants
+const DRAG_ACTIVATION_DISTANCE = 8;
+const CARD_ASSET_PATH = './card-assets';
+
+// Utility functions
+const createCardImagePath = (cardId) => `${CARD_ASSET_PATH}/tichu-card-${cardId}.png`;
+
+const createCardMap = (cards) => new Map(cards.map(card => [card.id, card]));
+
+const enrichCard = (card) => ({
+  ...card,
+  imagePath: createCardImagePath(card.id),
+  selected: false,
+  name: `${card.suit} ${card.value}`
+});
+
+function SortableCard({ card, index, totalCards, onCardClick }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: card.id });
+
+  const cardStyle = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  const handleClick = (e) => {
+    e.stopPropagation();
+    onCardClick(e);
+  };
+
+  // Determine the image to render
+  const imagePath = card.isFaceUp
+    ? card.imagePath
+    : `${CARD_ASSET_PATH}/tichu-card-back-red.png`;
+
+  return (
+    <div
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      className={`card-wrapper ${card.selected ? 'selected' : ''} ${
+        isDragging ? 'dragging' : ''
+      }`}
+      style={cardStyle}
+      data-index={index}
+    >
+      <img
+        src={imagePath}
+        alt={card.isFaceUp ? card.name : 'Card Back'}
+        className="card-image"
+        draggable="false"
+        onClick={handleClick}
+      />
+    </div>
+  );
+};
+
+// Main component
 export function Hand() {
   const { currentUser } = useUser();
   const [cards, setCards] = useState([]);
@@ -25,51 +90,41 @@ export function Hand() {
     lastSelectedIndex, 
     updateLastSelectedIndex 
   } = useCardSelection();
-
-  // Maintain a client-side prefered order of the cards
   const localOrderRef = useRef([]);
 
+  console.log(currentUser);
+
+  // Card synchronization effect
   useEffect(() => {
-    if (currentUser?.hand) {
-      const serverCards = currentUser.hand;
-      
-      // If we don't have a local order yet, initialize it
-      if (localOrderRef.current.length === 0) {
-        localOrderRef.current = serverCards.map(card => card.id);
-      }
+    if (!currentUser?.hand) return;
 
-      // Create a map of server cards by ID for easy lookup
-      const serverCardsMap = new Map(
-        serverCards.map(card => [card.id, card])
-      );
-
-      // Filter out any IDs that no longer exist in the server cards
-      localOrderRef.current = localOrderRef.current.filter(
-        id => serverCardsMap.has(id)
-      );
-
-      // Add any new cards from the server to the end of local order
-      serverCards.forEach(card => {
-        if (!localOrderRef.current.includes(card.id)) {
-          localOrderRef.current.push(card.id);
-        }
-      });
-
-      // Create the cards array using the local order
-      const orderedCards = localOrderRef.current
-        .map(id => serverCardsMap.get(id))
-        .filter(Boolean)
-        .map(card => ({
-          ...card,
-          imagePath: `./card-assets/tichu-card-${card.id}.png`,
-          selected: false,
-          name: `${card.suit} ${card.value}`
-        }));
-
-      setCards(orderedCards);
+    const serverCards = currentUser.hand;
+    
+    if (localOrderRef.current.length === 0) {
+      localOrderRef.current = serverCards.map(card => card.id);
     }
+
+    const serverCardsMap = createCardMap(serverCards);
+
+    // Maintain order and sync with server
+    localOrderRef.current = localOrderRef.current
+      .filter(id => serverCardsMap.has(id));
+
+    serverCards.forEach(card => {
+      if (!localOrderRef.current.includes(card.id)) {
+        localOrderRef.current.push(card.id);
+      }
+    });
+
+    const orderedCards = localOrderRef.current
+      .map(id => serverCardsMap.get(id))
+      .filter(Boolean)
+      .map(enrichCard);
+
+    setCards(orderedCards);
   }, [currentUser?.hand]);
 
+  // Keyboard handler effect
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
@@ -85,14 +140,16 @@ export function Hand() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [clearSelection]);
 
+  // DnD configuration
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8,
+        distance: DRAG_ACTIVATION_DISTANCE,
       },
     })
   );
 
+  // Event handlers
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
@@ -102,14 +159,11 @@ export function Hand() {
       const newIndex = cards.findIndex(card => card.id === over.id);
       const newCards = arrayMove(cards, oldIndex, newIndex);
       
-      // Update the local order reference
       localOrderRef.current = newCards.map(card => card.id);
-      
       return newCards;
     });
   };
 
-  // Rest of the component remains the same...
   const handleCardClick = (index, event) => {
     if (event.detail === 0) return;
 
@@ -137,6 +191,7 @@ export function Hand() {
     updateLastSelectedIndex(index);
   };
 
+  // Render
   return (
     <div className="hand-container">
       <DndContext
@@ -164,45 +219,3 @@ export function Hand() {
     </div>
   );
 }
-
-const SortableCard = ({ card, index, totalCards, onCardClick }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: card.id });
-
-  const cardStyle = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
-  const handleClick = (e) => {
-    e.stopPropagation();
-    onCardClick(e);
-  };
-
-  return (
-    <div
-      ref={setNodeRef}
-      {...attributes}
-      {...listeners}
-      className={`card-wrapper ${card.selected ? 'selected' : ''} ${
-        isDragging ? 'dragging' : ''
-      }`}
-      style={cardStyle}
-      data-index={index}
-    >
-      <img
-        src={card.imagePath}
-        alt={card.name}
-        className="card-image"
-        draggable="false"
-        onClick={handleClick}
-      />
-    </div>
-  );
-};

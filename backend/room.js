@@ -1,4 +1,4 @@
-import { DECK_CARDS } from './constants/cards.js'
+import { DECK_CARDS } from '../shared/game/cards.js';
 
 class Room {
   static MAX_CAPACITY = 4;
@@ -71,7 +71,7 @@ class Room {
       throw new Error('Check each player has been assigned a team. Each team must have exactly two players.')
     }
 
-    this.dealCards(this.users, DECK_CARDS);
+    this.dealCards(this.users);
     this.initialzeTableOrder();
   }
 
@@ -83,23 +83,27 @@ class Room {
   }
 
   // maybe make this private?
-  dealCards(users, deckCards) {
-    // Create a copy of the deck to shuffle
-    const shuffledDeck = [...deckCards];
+  dealCards(users) {
+    const shuffledDeck = [...DECK_CARDS];
     
-    // Fisher-Yates shuffle algorithm
     for (let i = shuffledDeck.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffledDeck[i], shuffledDeck[j]] = [shuffledDeck[j], shuffledDeck[i]];
     }
-  
-    // Deal cards to each user (assuming 4 players, 14 cards each in Tichu)
-    const cardsPerPlayer = 14;
+
+    const numCardsFirstSet = 8;
+    const numCardsSecondSet = 6;
+    const cardsPerPlayer = numCardsFirstSet + numCardsSecondSet;
+    
     users.forEach((user, index) => {
       const startIndex = index * cardsPerPlayer;
-      const userCards = shuffledDeck.slice(startIndex, startIndex + cardsPerPlayer);
-      user.setHand(userCards.sort((a, b) => a.rank - b.rank));
-      user.setHand(userCards);
+
+      const firstSet = shuffledDeck.slice(startIndex, startIndex + numCardsFirstSet)
+      const secondSet = shuffledDeck
+        .slice(startIndex + numCardsFirstSet, startIndex + cardsPerPlayer)
+        .map(card => ({ ...card, isFaceUp: false }));
+
+      user.setHand(secondSet.concat(firstSet));
     });
   }
 

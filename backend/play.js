@@ -1,5 +1,3 @@
-import { DECK_CARDS } from './constants/cards.js'
-
 class Play {
   #userId;
   #cards;
