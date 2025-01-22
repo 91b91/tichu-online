@@ -22,7 +22,7 @@
 }
 
 .card-wrapper[data-index]:not([data-index="0"]) {
-  margin-left: -100px; /* amount of overlap */
+  margin-left: -100px;
 }
 
 .card-wrapper.dragging {
@@ -73,4 +73,8 @@
 .selected-cards {
   padding: 10px;
   color: #666;
+}
+
+.card-wrapper.static {
+  cursor: pointer;
 }

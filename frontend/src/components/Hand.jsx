@@ -1,4 +1,3 @@
-// Types (could be moved to separate types.ts file)
 import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from "../contexts/UserContext";
 import { useCardSelection } from '../contexts/CardSelectionContext';
@@ -17,23 +16,32 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-// Constants
 const DRAG_ACTIVATION_DISTANCE = 8;
 const CARD_ASSET_PATH = './card-assets';
+const FLIP_DELAY = 50; // milliseconds between each card flip
+const FIRST_PHASE_COUNT = 8;
+const SECOND_PHASE_COUNT = 6;
 
-// Utility functions
 const createCardImagePath = (cardId) => `${CARD_ASSET_PATH}/tichu-card-${cardId}.png`;
 
-const createCardMap = (cards) => new Map(cards.map(card => [card.id, card]));
+function StaticCard({ card, index, onFlip }) {
+  return (
+    <div 
+      className="card-wrapper static unflipped-card"
+      data-index={index}
+    >
+      <img
+        src={`${CARD_ASSET_PATH}/tichu-card-back-red.png`}
+        alt="Card Back"
+        className="card-image"
+        draggable="false"
+        onClick={onFlip}
+      />
+    </div>
+  );
+}
 
-const enrichCard = (card) => ({
-  ...card,
-  imagePath: createCardImagePath(card.id),
-  selected: false,
-  name: `${card.suit} ${card.value}`
-});
-
-function SortableCard({ card, index, totalCards, onCardClick }) {
+function SortableCard({ card, index, onCardClick }) {
   const {
     attributes,
     listeners,
@@ -53,37 +61,33 @@ function SortableCard({ card, index, totalCards, onCardClick }) {
     onCardClick(e);
   };
 
-  // Determine the image to render
-  const imagePath = card.isFaceUp
-    ? card.imagePath
-    : `${CARD_ASSET_PATH}/tichu-card-back-red.png`;
-
   return (
     <div
       ref={setNodeRef}
       {...attributes}
       {...listeners}
-      className={`card-wrapper ${card.selected ? 'selected' : ''} ${
+      className={`card-wrapper flipped-card ${card.selected ? 'selected' : ''} ${
         isDragging ? 'dragging' : ''
       }`}
       style={cardStyle}
       data-index={index}
     >
       <img
-        src={imagePath}
-        alt={card.isFaceUp ? card.name : 'Card Back'}
+        src={createCardImagePath(card.id)}
+        alt={`${card.suit} ${card.value}`}
         className="card-image"
         draggable="false"
         onClick={handleClick}
       />
     </div>
   );
-};
+}
 
-// Main component
 export function Hand() {
   const { currentUser } = useUser();
+  const [visibleCardIds, setVisibleCardIds] = useState(new Set());
   const [cards, setCards] = useState([]);
+  const [flipPhase, setFlipPhase] = useState(0); // 0 = none, 1 = first 8, 2 = all
   const { 
     selectCards, 
     clearSelection, 
@@ -91,40 +95,41 @@ export function Hand() {
     updateLastSelectedIndex 
   } = useCardSelection();
   const localOrderRef = useRef([]);
+  const isFlippingRef = useRef(false);
 
-  console.log(currentUser);
-
-  // Card synchronization effect
+  // Handle initial cards and updates
   useEffect(() => {
     if (!currentUser?.hand) return;
-
-    const serverCards = currentUser.hand;
+    
+    const serverCards = currentUser.hand.map(card => ({
+      ...card,
+      selected: false
+    }));
     
     if (localOrderRef.current.length === 0) {
       localOrderRef.current = serverCards.map(card => card.id);
     }
 
-    const serverCardsMap = createCardMap(serverCards);
-
-    // Maintain order and sync with server
-    localOrderRef.current = localOrderRef.current
-      .filter(id => serverCardsMap.has(id));
-
+    // Update order for any new cards while preserving existing order
     serverCards.forEach(card => {
       if (!localOrderRef.current.includes(card.id)) {
         localOrderRef.current.push(card.id);
       }
     });
 
+    // Remove any cards that no longer exist
+    localOrderRef.current = localOrderRef.current.filter(id => 
+      serverCards.some(card => card.id === id)
+    );
+
+    // Apply the order to the cards
     const orderedCards = localOrderRef.current
-      .map(id => serverCardsMap.get(id))
-      .filter(Boolean)
-      .map(enrichCard);
+      .map(id => serverCards.find(card => card.id === id))
+      .filter(Boolean);
 
     setCards(orderedCards);
   }, [currentUser?.hand]);
 
-  // Keyboard handler effect
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
@@ -140,7 +145,6 @@ export function Hand() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [clearSelection]);
 
-  // DnD configuration
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -149,7 +153,6 @@ export function Hand() {
     })
   );
 
-  // Event handlers
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
@@ -164,34 +167,94 @@ export function Hand() {
     });
   };
 
-  const handleCardClick = (index, event) => {
+  const handleCardClick = (visibleIndex, event) => {
     if (event.detail === 0) return;
 
     setCards(cards => {
-      let newCards;
+      const targetCard = visibleCards[visibleIndex];
+      
+      let newCards = cards.map(card => ({
+        ...card,
+        selected: card.id === targetCard.id ? !card.selected : card.selected
+      }));
+
       if (event.shiftKey && lastSelectedIndex !== null) {
-        const start = Math.min(lastSelectedIndex, index);
-        const end = Math.max(lastSelectedIndex, index);
+        const lastTargetCard = visibleCards[lastSelectedIndex];
+        const currentVisibleIndex = visibleCards.findIndex(card => card.id === targetCard.id);
+        const lastVisibleIndex = visibleCards.findIndex(card => card.id === lastTargetCard.id);
         
-        newCards = cards.map((card, i) => ({
-          ...card,
-          selected: i >= start && i <= end ? true : card.selected
-        }));
-      } else {
-        newCards = cards.map((card, i) => ({
-          ...card,
-          selected: i === index ? !card.selected : card.selected
-        }));
+        const start = Math.min(currentVisibleIndex, lastVisibleIndex);
+        const end = Math.max(currentVisibleIndex, lastVisibleIndex);
+        
+        newCards = cards.map(card => {
+          const cardVisibleIndex = visibleCards.findIndex(vc => vc.id === card.id);
+          return {
+            ...card,
+            selected: cardVisibleIndex >= start && cardVisibleIndex <= end ? true : card.selected
+          };
+        });
       }
 
       selectCards(newCards.filter(card => card.selected));
       return newCards;
     });
 
-    updateLastSelectedIndex(index);
+    updateLastSelectedIndex(visibleIndex);
   };
 
-  // Render
+  const handleFlipCards = () => {
+    if (isFlippingRef.current) return;
+    isFlippingRef.current = true;
+
+    let cardsToFlip;
+    if (flipPhase === 0) {
+      cardsToFlip = cards.slice(0, FIRST_PHASE_COUNT);
+      setFlipPhase(1);
+    } else if (flipPhase === 1) {
+      cardsToFlip = cards.slice(FIRST_PHASE_COUNT, FIRST_PHASE_COUNT + SECOND_PHASE_COUNT);
+      setFlipPhase(2);
+    } else {
+      isFlippingRef.current = false;
+      return;
+    }
+
+    cardsToFlip.forEach((cardToFlip, index) => {
+      setTimeout(() => {
+        setVisibleCardIds(prev => {
+          const newSet = new Set(prev);
+          newSet.add(cardToFlip.id);
+          return newSet;
+        });
+
+        setCards(prevCards => {
+          const cardIndex = prevCards.findIndex(card => card.id === cardToFlip.id);
+          const remainingCards = prevCards.filter((_, i) => i !== cardIndex);
+          const newCards = [prevCards[cardIndex], ...remainingCards];
+          localOrderRef.current = newCards.map(card => card.id);
+          
+          if (index === cardsToFlip.length - 1) {
+            isFlippingRef.current = false;
+          }
+          
+          return newCards;
+        });
+      }, index * FLIP_DELAY);
+    });
+  };
+
+  // Split cards based on current order, not original positions
+  const visibleCards = [];
+  const hiddenCards = [];
+  
+  // Maintain the current order by iterating through cards array
+  cards.forEach(card => {
+    if (visibleCardIds.has(card.id)) {
+      visibleCards.push(card);
+    } else {
+      hiddenCards.push(card);
+    }
+  });
+
   return (
     <div className="hand-container">
       <DndContext
@@ -200,19 +263,30 @@ export function Hand() {
         onDragEnd={handleDragEnd}
       >
         <SortableContext
-          items={cards.map(card => card.id)}
+          items={visibleCards.map(card => card.id)}
           strategy={horizontalListSortingStrategy}
         >
           <div className="cards-row">
-            {cards.map((card, index) => (
-              <SortableCard
-                key={card.id}
-                card={card}
-                index={index}
-                totalCards={cards.length}
-                onCardClick={(e) => handleCardClick(index, e)}
-              />
-            ))}
+            {[...hiddenCards, ...visibleCards].map((card, index) => 
+              visibleCardIds.has(card.id) ? (
+                <SortableCard
+                  key={card.id}
+                  card={card}
+                  index={index}
+                  onCardClick={(e) => handleCardClick(
+                    visibleCards.findIndex(c => c.id === card.id),
+                    e
+                  )}
+                />
+              ) : (
+                <StaticCard
+                  key={card.id}
+                  card={card}
+                  index={index}
+                  onFlip={handleFlipCards}
+                />
+              )
+            )}
           </div>
         </SortableContext>
       </DndContext>

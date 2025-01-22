@@ -87,23 +87,15 @@ class Room {
     const shuffledDeck = [...DECK_CARDS];
     
     for (let i = shuffledDeck.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffledDeck[i], shuffledDeck[j]] = [shuffledDeck[j], shuffledDeck[i]];
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledDeck[i], shuffledDeck[j]] = [shuffledDeck[j], shuffledDeck[i]];
     }
 
-    const numCardsFirstSet = 8;
-    const numCardsSecondSet = 6;
-    const cardsPerPlayer = numCardsFirstSet + numCardsSecondSet;
-    
+    const cardsPerPlayer = 14;
     users.forEach((user, index) => {
       const startIndex = index * cardsPerPlayer;
 
-      const firstSet = shuffledDeck.slice(startIndex, startIndex + numCardsFirstSet)
-      const secondSet = shuffledDeck
-        .slice(startIndex + numCardsFirstSet, startIndex + cardsPerPlayer)
-        .map(card => ({ ...card, isFaceUp: false }));
-
-      user.setHand(secondSet.concat(firstSet));
+      user.setHand(shuffledDeck.slice(startIndex, startIndex + cardsPerPlayer));
     });
   }
 
