@@ -74,6 +74,7 @@
   color: var(--soft-grey-colour);
   cursor: pointer;
   accent-color: var(--primary-red-colour);
+  text-align: center;
 }
 
 /* Team Selector States */
