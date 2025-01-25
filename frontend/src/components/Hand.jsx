@@ -18,29 +18,39 @@ import { CSS } from '@dnd-kit/utilities';
 
 const DRAG_ACTIVATION_DISTANCE = 8;
 const CARD_ASSET_PATH = './card-assets';
-const FLIP_DELAY = 50; // milliseconds between each card flip
-const FIRST_PHASE_COUNT = 8;
-const SECOND_PHASE_COUNT = 6;
 
 const createCardImagePath = (cardId) => `${CARD_ASSET_PATH}/tichu-card-${cardId}.png`;
 
-function StaticCard({ card, index, onFlip }) {
+// Static card component for face-down cards
+function StaticCard({ card, index }) {
+  const { currentUser, flipCards } = useUser();
+
+  async function handleStaticCardClick() {
+    console.log('Static card clicked:', card);
+    try {
+      await flipCards(currentUser.userId);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <div 
-      className="card-wrapper static unflipped-card"
+      className="card-wrapper static"
       data-index={index}
+      onClick={handleStaticCardClick}
     >
       <img
         src={`${CARD_ASSET_PATH}/tichu-card-back-red.png`}
         alt="Card Back"
         className="card-image"
         draggable="false"
-        onClick={onFlip}
       />
     </div>
   );
 }
 
+// Sortable card component for face-up cards that can be dragged and selected
 function SortableCard({ card, index, onCardClick }) {
   const {
     attributes,
@@ -66,7 +76,7 @@ function SortableCard({ card, index, onCardClick }) {
       ref={setNodeRef}
       {...attributes}
       {...listeners}
-      className={`card-wrapper flipped-card ${card.selected ? 'selected' : ''} ${
+      className={`card-wrapper ${card.selected ? 'selected' : ''} ${
         isDragging ? 'dragging' : ''
       }`}
       style={cardStyle}
@@ -85,9 +95,7 @@ function SortableCard({ card, index, onCardClick }) {
 
 export function Hand() {
   const { currentUser } = useUser();
-  const [visibleCardIds, setVisibleCardIds] = useState(new Set());
   const [cards, setCards] = useState([]);
-  const [flipPhase, setFlipPhase] = useState(0); // 0 = none, 1 = first 8, 2 = all
   const { 
     selectCards, 
     clearSelection, 
@@ -95,9 +103,8 @@ export function Hand() {
     updateLastSelectedIndex 
   } = useCardSelection();
   const localOrderRef = useRef([]);
-  const isFlippingRef = useRef(false);
 
-  // Handle initial cards and updates
+  // Handle initial cards and updates while preserving local order
   useEffect(() => {
     if (!currentUser?.hand) return;
     
@@ -106,6 +113,7 @@ export function Hand() {
       selected: false
     }));
     
+    // Initialize local order if empty
     if (localOrderRef.current.length === 0) {
       localOrderRef.current = serverCards.map(card => card.id);
     }
@@ -122,7 +130,7 @@ export function Hand() {
       serverCards.some(card => card.id === id)
     );
 
-    // Apply the order to the cards
+    // Apply the local order to the cards
     const orderedCards = localOrderRef.current
       .map(id => serverCards.find(card => card.id === id))
       .filter(Boolean);
@@ -130,6 +138,7 @@ export function Hand() {
     setCards(orderedCards);
   }, [currentUser?.hand]);
 
+  // Handle escape key to clear selection
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
@@ -153,6 +162,7 @@ export function Hand() {
     })
   );
 
+  // Handle drag and drop reordering of face-up cards
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
@@ -167,8 +177,11 @@ export function Hand() {
     });
   };
 
+  // Handle card selection with shift-click support
   const handleCardClick = (visibleIndex, event) => {
     if (event.detail === 0) return;
+
+    const visibleCards = cards.filter(card => card.isFaceUp);
 
     setCards(cards => {
       const targetCard = visibleCards[visibleIndex];
@@ -202,58 +215,9 @@ export function Hand() {
     updateLastSelectedIndex(visibleIndex);
   };
 
-  const handleFlipCards = () => {
-    if (isFlippingRef.current) return;
-    isFlippingRef.current = true;
-
-    let cardsToFlip;
-    if (flipPhase === 0) {
-      cardsToFlip = cards.slice(0, FIRST_PHASE_COUNT);
-      setFlipPhase(1);
-    } else if (flipPhase === 1) {
-      cardsToFlip = cards.slice(FIRST_PHASE_COUNT, FIRST_PHASE_COUNT + SECOND_PHASE_COUNT);
-      setFlipPhase(2);
-    } else {
-      isFlippingRef.current = false;
-      return;
-    }
-
-    cardsToFlip.forEach((cardToFlip, index) => {
-      setTimeout(() => {
-        setVisibleCardIds(prev => {
-          const newSet = new Set(prev);
-          newSet.add(cardToFlip.id);
-          return newSet;
-        });
-
-        setCards(prevCards => {
-          const cardIndex = prevCards.findIndex(card => card.id === cardToFlip.id);
-          const remainingCards = prevCards.filter((_, i) => i !== cardIndex);
-          const newCards = [prevCards[cardIndex], ...remainingCards];
-          localOrderRef.current = newCards.map(card => card.id);
-          
-          if (index === cardsToFlip.length - 1) {
-            isFlippingRef.current = false;
-          }
-          
-          return newCards;
-        });
-      }, index * FLIP_DELAY);
-    });
-  };
-
-  // Split cards based on current order, not original positions
-  const visibleCards = [];
-  const hiddenCards = [];
-  
-  // Maintain the current order by iterating through cards array
-  cards.forEach(card => {
-    if (visibleCardIds.has(card.id)) {
-      visibleCards.push(card);
-    } else {
-      hiddenCards.push(card);
-    }
-  });
+  // Split cards into face-up and face-down based on server state
+  const visibleCards = cards.filter(card => card.isFaceUp);
+  const hiddenCards = cards.filter(card => !card.isFaceUp);
 
   return (
     <div className="hand-container">
@@ -268,7 +232,7 @@ export function Hand() {
         >
           <div className="cards-row">
             {[...hiddenCards, ...visibleCards].map((card, index) => 
-              visibleCardIds.has(card.id) ? (
+              card.isFaceUp ? (
                 <SortableCard
                   key={card.id}
                   card={card}
@@ -283,7 +247,6 @@ export function Hand() {
                   key={card.id}
                   card={card}
                   index={index}
-                  onFlip={handleFlipCards}
                 />
               )
             )}

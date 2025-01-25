@@ -129,5 +129,39 @@ export function useSocket(url) {
     })
   }
 
-  return { messages, userList, sendMessage, joinRoom, updateUsersTeam, startGameInRoom, playSelectedCards, playStack, callTichu };
+  function updateUserProgress(userId, userProgress) {
+    if (socket) {
+      socket.emit("updateUserProgressRequest", ({userId, userProgress}))
+
+      socket.once("updateUserProgressError", (errorMessage) => {
+        reject(new Error(errorMessage));
+      });
+
+      socket.once("updateUserProgressSuccess", () => {
+        resolve();
+      })
+    } else {
+      reject(new Error("Socket not initialized."));
+    }
+  }
+
+  function flipCards(userId) {
+    return new Promise((resolve, reject) => {
+      if (socket) {
+        socket.emit("flipCardsRequest", ({ userId }));
+
+        socket.once("flipCardsError", (errorMessage) => {
+          reject(new Error(errorMessage));
+        })
+
+        socket.once("flipCardsSuccess", () => {
+          resolve();
+        });
+      } else {
+        reject(new Error("Socket not initialized."));
+      }
+    })
+  }
+
+  return { messages, userList, sendMessage, joinRoom, updateUsersTeam, startGameInRoom, playSelectedCards, playStack, callTichu, updateUserProgress, flipCards };
 }

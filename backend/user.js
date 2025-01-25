@@ -1,9 +1,12 @@
+import { USER_PROGRESS_STATE } from '../shared/game/user-progress.js'
+
 class User {
   team = 'Not Selected'
   isPartyLeader = false;
   hand = [];  // Initialize as empty array
   isTichu = false;
   isGrandTichu = false;
+  progressState = USER_PROGRESS_STATE.IN_LOBBY;
 
   constructor(name, userId, socketId) {
     this.name = name;
@@ -50,6 +53,14 @@ class User {
   callGrandTichu() {
     this.isTichu = false;
     this.isGrandTichu = true;
+  }
+
+  updateProgressState(newProgressState) {
+    this.progressState = newProgressState;
+  }
+
+  flipCards() {
+    this.hand.forEach(card => card.isFaceUp = true);
   }
 }
 

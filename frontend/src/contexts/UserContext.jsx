@@ -8,7 +8,7 @@ export function UserProvider({ children }) {
   const [username, setUsername] = useState("");
   const [userId, setUserId] = useState("");
   const [roomName, setRoomName] = useState("");
-  const { messages, userList, sendMessage, joinRoom, updateUsersTeam, startGameInRoom, playSelectedCards, playStack, callTichu } = useSocket("http://localhost:3500");
+  const { messages, userList, sendMessage, joinRoom, updateUsersTeam, startGameInRoom, playSelectedCards, playStack, callTichu, updateUserProgress, flipCards } = useSocket("http://localhost:3500");
 
   // Generate a unique user ID on mount
   useEffect(() => {
@@ -38,6 +38,8 @@ export function UserProvider({ children }) {
     playSelectedCards,
     playStack,
     callTichu,
+    updateUserProgress,
+    flipCards,
   }
 
   return (

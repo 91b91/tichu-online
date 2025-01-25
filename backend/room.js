@@ -1,4 +1,4 @@
-import { DECK_CARDS } from '../shared/game/cards.js';
+import { DECK_CARDS } from '../shared/game/cards.js'
 
 class Room {
   static MAX_CAPACITY = 4;
@@ -58,7 +58,8 @@ class Room {
         team: user.team,
         isPartyLeader: user.getIsPartyLeader(),
         isTichu: user.isTichu,
-        hand: user.getHand()
+        hand: user.getHand(),
+        progressState: user.progressState,
       }
     ));
   }
@@ -82,22 +83,31 @@ class Room {
     return (team1Count === 2 && team2Count === 2)
   }
 
-  // maybe make this private?
   dealCards(users) {
-    const shuffledDeck = [...DECK_CARDS];
+    const numCardsFirstSet = 8;
+    const numCardsSecondSet = 6;
+    const numCardsTotal = numCardsFirstSet + numCardsSecondSet;
+    const shuffledDeck = [...DECK_CARDS.map(card => ({ ...card }))];
     
+    // Shuffle the deck using Fischer-Yates alogorithm
     for (let i = shuffledDeck.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffledDeck[i], shuffledDeck[j]] = [shuffledDeck[j], shuffledDeck[i]];
     }
 
-    const cardsPerPlayer = 14;
     users.forEach((user, index) => {
-      const startIndex = index * cardsPerPlayer;
+      const startIndex = index * numCardsTotal;
+    
+      const firstSet = shuffledDeck.slice(startIndex, startIndex + numCardsFirstSet)
+      const secondSet = shuffledDeck.slice(startIndex + numCardsFirstSet, startIndex + numCardsTotal)
 
-      user.setHand(shuffledDeck.slice(startIndex, startIndex + cardsPerPlayer));
+      firstSet.forEach(card => (card.isFaceUp = true));
+      secondSet.forEach(card => (card.isFaceUp = false));
+    
+      user.setHand([...secondSet, ...firstSet]);
     });
   }
+    
 
   initialzeTableOrder() {
     const team1 = this.users.filter(user => user.team === 'Team 1');

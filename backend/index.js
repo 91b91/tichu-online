@@ -151,9 +151,6 @@ io.on('connection', (socket) => {
     const room = RoomRegistary.getRoomByUserId(userId);
     const user = room.getUserByUserId(userId);
 
-    console.log('-------');
-    console.log(user);
-
     user.callTichu();
 
     io.to(room.roomId).emit('userList', {
@@ -163,7 +160,46 @@ io.on('connection', (socket) => {
     socket.emit('callTichuSuccess')
   });
 
+  // ---- UPDATE GAME STATE ----
+  socket.on('updateUserProgressRequest', ({ userId, userProgress }) => {
+    const room = RoomRegistary.getRoomByUserId(userId);
+    try {
+      const user = room.getUserByUserId(userId);
+
+      user.updateProgressState(userProgress);
+
+      io.to(room.roomId).emit('userList', {
+        users: room.getUserList()
+      });
+
+      io.to(room.roomId).emit('updateUserProgressSuccess');
+    } catch(error) {
+      socket.emit('updateUserProgressFailure', error.message);
+    }
+  });
+
+
+  // ---- FLIP CARDS ----
+  socket.on('flipCardsRequest', ({ userId }) =>  {
+    const room = RoomRegistary.getRoomByUserId(userId);
+    try {
+      const user = room.getUserByUserId(userId);
+      
+      user.flipCards();
+
+      io.to(room.roomId).emit('userList', {
+        users: room.getUserList()
+      });
+
+      io.to(room.roomId).emit('flipCardsSuccess');
+    } catch(error) {
+      console.log(error.message);
+      socket.emit('flipCardsFailure', error.message);
+    }
+  });
+
 });
+
 
 // Helper function to build messages
 function buildMsg(tag, name, text) {
