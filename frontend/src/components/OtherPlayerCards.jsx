@@ -1,11 +1,11 @@
 export function OtherPlayerCards({ player }) {
-  if (!player || !player.hand) {
+  if (!player || !player.faceUpCardIds) {
     return null;
   }
 
   return (
     <div className="other-player-cards">
-      {player.hand.map((card, index) => (
+      {player.faceUpCardIds.map((cardId, index) => (
         <div 
           key={index} 
           className="facedown-card-wrapper"

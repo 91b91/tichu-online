@@ -1,4 +1,4 @@
-import { DECK_CARDS } from '../shared/game/cards.js'
+import { DECK_CARDS, DECK_CARD_IDS } from '../shared/game/cards.js'
 import { USER_PROGRESS_STATE } from '../shared/game/user-progress.js';
 
 class Room {
@@ -24,7 +24,7 @@ class Room {
   
     // Assign party leader if this is the first user
     if (this.users.length === 0) {
-      user.setIsPartyLeader(true);
+      user.isPartyLeader = true;
     }
   
     // Add or replace the user in the room
@@ -46,8 +46,8 @@ class Room {
 
     this.users = this.users.filter(user => user.socketId !== socketId);
 
-    if (removedUser.getIsPartyLeader() && this.users.length !==0 ) {
-      this.users[0].setIsPartyLeader(true);
+    if (removedUser.isPartyLeader && this.users.length !==0 ) {
+      this.users[0].isPartyLeader = true;
     }
   }
 
@@ -68,8 +68,8 @@ class Room {
   }
 
   isValidTeamAssignment() {
-    const team1Count = this.users.filter(user => user.getTeam() === 'Team 1').length;
-    const team2Count = this.users.filter(user => user.getTeam() === 'Team 2').length;
+    const team1Count = this.users.filter(user => user.team === 'Team 1').length;
+    const team2Count = this.users.filter(user => user.team === 'Team 2').length;
 
     return (team1Count === 2 && team2Count === 2)
   }
@@ -78,27 +78,26 @@ class Room {
     const numCardsFirstSet = 8;
     const numCardsSecondSet = 6;
     const numCardsTotal = numCardsFirstSet + numCardsSecondSet;
-    const shuffledDeck = [...DECK_CARDS.map(card => ({ ...card }))];
-    
-    // Shuffle the deck using Fischer-Yates alogorithm
-    for (let i = shuffledDeck.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffledDeck[i], shuffledDeck[j]] = [shuffledDeck[j], shuffledDeck[i]];
+  
+    // Create a shuffled copy of the deck using card IDs
+    const shuffledDeckIds = [...DECK_CARD_IDS];
+    for (let i = shuffledDeckIds.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledDeckIds[i], shuffledDeckIds[j]] = [shuffledDeckIds[j], shuffledDeckIds[i]];
     }
-
+  
     users.forEach((user, index) => {
       const startIndex = index * numCardsTotal;
-    
-      const firstSet = shuffledDeck.slice(startIndex, startIndex + numCardsFirstSet)
-      const secondSet = shuffledDeck.slice(startIndex + numCardsFirstSet, startIndex + numCardsTotal)
-
-      firstSet.forEach(card => (card.isFaceUp = true));
-      secondSet.forEach(card => (card.isFaceUp = false));
-    
-      user.setHand([...secondSet, ...firstSet]);
+  
+      // Get the first and second set of cards (as IDs)
+      const faceUpCardIds = shuffledDeckIds.slice(startIndex, startIndex + numCardsFirstSet);
+      const faceDownCardIds = shuffledDeckIds.slice(startIndex + numCardsFirstSet, startIndex + numCardsTotal);
+  
+      // Assign to the user
+      user.faceUpCardIds = faceUpCardIds;
+      user.faceDownCardIds = faceDownCardIds; // Fixed capitalization (Cardids -> CardIds)
     });
   }
-    
 
   initialzeTableOrder() {
     const team1 = this.users.filter(user => user.team === 'Team 1');

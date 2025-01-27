@@ -100,7 +100,7 @@ io.on('connection', (socket) => {
     const room = RoomRegistary.getRoomBySocket(socket.id);
     if (room) {
       const user = room.getUserByUserId(userId);
-      user.setTeam(team)
+      user.team = team;
       
       // Update the user list for that room
       io.to(room.roomId).emit('userList', {
@@ -212,10 +212,6 @@ io.on('connection', (socket) => {
     const room = RoomRegistary.getRoomByUserId(userId);
     try {
       const user = room.getUserByUserId(userId);
-
-      if (user.progressState === USER_PROGRESS_STATE.PASS_CARDS_LEFT_OPPONENT) {
-        room.getUserList()[]
-      }
 
       io.to(room.roomId).emit('userList', {
         users: room.getUserList()

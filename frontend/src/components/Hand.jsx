@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from "../contexts/UserContext";
 import { useCardSelection } from '../contexts/CardSelectionContext';
+import { getCardsByIds } from '@shared/game/cards';
 import {
   DndContext,
   closestCenter,
@@ -21,12 +22,11 @@ const CARD_ASSET_PATH = './card-assets';
 
 const createCardImagePath = (cardId) => `${CARD_ASSET_PATH}/tichu-card-${cardId}.png`;
 
-// Static card component for face-down cards
-function StaticCard({ card, index }) {
+// Renders a face-down card that can be clicked to flip
+function StaticCard({ cardId, index }) {
   const { currentUser, flipCards } = useUser();
 
   async function handleStaticCardClick() {
-    console.log('Static card clicked:', card);
     try {
       await flipCards(currentUser.userId);
     } catch (error) {
@@ -50,8 +50,8 @@ function StaticCard({ card, index }) {
   );
 }
 
-// Sortable card component for face-up cards that can be dragged and selected
-function SortableCard({ card, index, onCardClick }) {
+// Renders a face-up card that can be dragged, selected, and clicked
+function SortableCard({ cardId, card, index, onCardClick }) {
   const {
     attributes,
     listeners,
@@ -59,16 +59,11 @@ function SortableCard({ card, index, onCardClick }) {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: card.id });
+  } = useSortable({ id: cardId });
 
   const cardStyle = {
     transform: CSS.Transform.toString(transform),
     transition,
-  };
-
-  const handleClick = (e) => {
-    e.stopPropagation();
-    onCardClick(e);
   };
 
   return (
@@ -83,68 +78,71 @@ function SortableCard({ card, index, onCardClick }) {
       data-index={index}
     >
       <img
-        src={createCardImagePath(card.id)}
+        src={createCardImagePath(cardId)}
         alt={`${card.suit} ${card.value}`}
         className="card-image"
         draggable="false"
-        onClick={handleClick}
+        onClick={(e) => onCardClick(e)}
       />
     </div>
   );
 }
 
+// Main component that manages the player's hand of cards
 export function Hand() {
   const { currentUser } = useUser();
-  const [cards, setCards] = useState([]);
+  const [faceUpCards, setFaceUpCards] = useState([]);
   const { 
     selectCards, 
     clearSelection, 
     lastSelectedIndex, 
     updateLastSelectedIndex 
   } = useCardSelection();
+  
+  // Maintains the order of cards after drag and drop operations
   const localOrderRef = useRef([]);
 
-  // Handle initial cards and updates while preserving local order
+  // Update face-up cards when they change, maintaining drag-and-drop order
   useEffect(() => {
-    if (!currentUser?.hand) return;
-    
-    const serverCards = currentUser.hand.map(card => ({
+    if (!currentUser?.faceUpCardIds) return;
+
+    const cards = getCardsByIds(currentUser.faceUpCardIds).map(card => ({
       ...card,
-      selected: false
+      selected: false,
     }));
-    
-    // Initialize local order if empty
+
+    // Initialize local order if it's empty
     if (localOrderRef.current.length === 0) {
-      localOrderRef.current = serverCards.map(card => card.id);
+      localOrderRef.current = cards.map(card => card.id);
     }
 
-    // Update order for any new cards while preserving existing order
-    serverCards.forEach(card => {
+    // Add any new cards to the end of the local order
+    cards.forEach(card => {
       if (!localOrderRef.current.includes(card.id)) {
-        localOrderRef.current.push(card.id);
+        localOrderRef.current.unshift(card.id);
       }
     });
 
     // Remove any cards that no longer exist
-    localOrderRef.current = localOrderRef.current.filter(id => 
-      serverCards.some(card => card.id === id)
+    localOrderRef.current = localOrderRef.current.filter(id =>
+      cards.some(card => card.id === id)
     );
 
     // Apply the local order to the cards
     const orderedCards = localOrderRef.current
-      .map(id => serverCards.find(card => card.id === id))
+      .map(id => cards.find(card => card.id === id))
       .filter(Boolean);
 
-    setCards(orderedCards);
-  }, [currentUser?.hand]);
+    setFaceUpCards(orderedCards);
+  }, [currentUser?.faceUpCardIds]);
 
-  // Handle escape key to clear selection
+  // Handle escape key to clear card selection
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
-        setCards(cards => cards.map(card => ({
+        setFaceUpCards(cards => cards.map(card => ({
           ...card,
-          selected: false
+          selected: false,
         })));
         clearSelection();
       }
@@ -162,50 +160,43 @@ export function Hand() {
     })
   );
 
-  // Handle drag and drop reordering of face-up cards
+  // Update card order after drag and drop
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
-    
-    setCards((cards) => {
+
+    setFaceUpCards((cards) => {
       const oldIndex = cards.findIndex(card => card.id === active.id);
       const newIndex = cards.findIndex(card => card.id === over.id);
       const newCards = arrayMove(cards, oldIndex, newIndex);
-      
+
+      // Update local order reference to match new arrangement
       localOrderRef.current = newCards.map(card => card.id);
       return newCards;
     });
   };
 
-  // Handle card selection with shift-click support
+  // Handle card selection with shift-click support for multiple selection
   const handleCardClick = (visibleIndex, event) => {
-    if (event.detail === 0) return;
+    if (event.detail === 0) return; // Ignore artificial clicks from drag end
 
-    const visibleCards = cards.filter(card => card.isFaceUp);
+    setFaceUpCards(cards => {
+      const targetCard = cards[visibleIndex];
 
-    setCards(cards => {
-      const targetCard = visibleCards[visibleIndex];
-      
       let newCards = cards.map(card => ({
         ...card,
-        selected: card.id === targetCard.id ? !card.selected : card.selected
+        selected: card.id === targetCard.id ? !card.selected : card.selected,
       }));
 
+      // Handle shift-click range selection
       if (event.shiftKey && lastSelectedIndex !== null) {
-        const lastTargetCard = visibleCards[lastSelectedIndex];
-        const currentVisibleIndex = visibleCards.findIndex(card => card.id === targetCard.id);
-        const lastVisibleIndex = visibleCards.findIndex(card => card.id === lastTargetCard.id);
-        
-        const start = Math.min(currentVisibleIndex, lastVisibleIndex);
-        const end = Math.max(currentVisibleIndex, lastVisibleIndex);
-        
-        newCards = cards.map(card => {
-          const cardVisibleIndex = visibleCards.findIndex(vc => vc.id === card.id);
-          return {
-            ...card,
-            selected: cardVisibleIndex >= start && cardVisibleIndex <= end ? true : card.selected
-          };
-        });
+        const start = Math.min(visibleIndex, lastSelectedIndex);
+        const end = Math.max(visibleIndex, lastSelectedIndex);
+
+        newCards = cards.map((card, idx) => ({
+          ...card,
+          selected: idx >= start && idx <= end ? true : card.selected,
+        }));
       }
 
       selectCards(newCards.filter(card => card.selected));
@@ -215,44 +206,47 @@ export function Hand() {
     updateLastSelectedIndex(visibleIndex);
   };
 
-  // Split cards into face-up and face-down based on server state
-  const visibleCards = cards.filter(card => card.isFaceUp);
-  const hiddenCards = cards.filter(card => !card.isFaceUp);
-
   return (
     <div className="hand-container">
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
-        <SortableContext
-          items={visibleCards.map(card => card.id)}
-          strategy={horizontalListSortingStrategy}
+      <div className="cards-area">
+        <div className="cards-group face-down">
+          {currentUser.faceDownCardIds.map((id, index) => (
+            <StaticCard 
+              key={id} 
+              cardId={id} 
+              index={index}
+            />
+          ))}
+        </div>
+
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
         >
-          <div className="cards-row">
-            {[...hiddenCards, ...visibleCards].map((card, index) => 
-              card.isFaceUp ? (
+          <SortableContext
+            items={faceUpCards.map(card => card.id)}
+            strategy={horizontalListSortingStrategy}
+          >
+            <div className={`cards-group face-up ${currentUser.faceDownCardIds.length === 0 ? 'no-face-down' : ''}`}>
+              {faceUpCards.map((card, index) => (
                 <SortableCard
                   key={card.id}
+                  cardId={card.id}
                   card={card}
                   index={index}
-                  onCardClick={(e) => handleCardClick(
-                    visibleCards.findIndex(c => c.id === card.id),
-                    e
-                  )}
+                  onCardClick={(e) =>
+                    handleCardClick(
+                      faceUpCards.findIndex(c => c.id === card.id),
+                      e
+                    )
+                  }
                 />
-              ) : (
-                <StaticCard
-                  key={card.id}
-                  card={card}
-                  index={index}
-                />
-              )
-            )}
-          </div>
-        </SortableContext>
-      </DndContext>
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
+      </div>
     </div>
   );
 }

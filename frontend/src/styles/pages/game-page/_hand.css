@@ -2,47 +2,49 @@
   padding: 0px;
   display: flex;
   justify-content: flex-start;
-  /* border: 2px solid yellow; */
-
   user-select: none;
-  -webkit-user-select: none; /* For Safari */
-  -moz-user-select: none; /* For Firefox */
-  -ms-user-select: none; /* For IE10+/Edge */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
-.cards-row {
+.cards-area {
   display: flex;
-  justify-content: center;
-  /* border: 2px solid green; */
-}
-
-.card-wrapper {
-  cursor: grab;
   position: relative;
 }
 
+.cards-group {
+  display: flex;
+  position: relative;
+}
+
+.cards-group.face-up {
+  margin-left: -100px; /* CONTROLS overlap with face-down group */
+}
+
+.cards-group.face-up.no-face-down {
+  margin-left: 0; 
+}
+
+.card-wrapper {
+  position: relative;
+  cursor: grab;
+}
+
 .card-wrapper[data-index]:not([data-index="0"]) {
-  margin-left: -100px;
+  margin-left: -100px; /* CONTROLS overlap of each card */
 }
 
 .card-wrapper.dragging {
   z-index: 9999;
 }
 
-.card-wrapper {
-  cursor: grab;
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.card-wrapper:focus {
-  outline: none;
+.card-wrapper.static {
+  cursor: pointer;
 }
 
 .card-wrapper.selected .card-image {
   filter: brightness(75%);
-  outline: none;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.528);
   transform: translateY(-10px);
 }
@@ -60,21 +62,24 @@
   object-fit: cover;
 }
 
+.card-wrapper:focus,
+.card-wrapper:focus-visible,
+.card-image:focus,
+.card-image:focus-visible {
+  outline: none;
+  -webkit-tap-highlight-color: transparent; /* For Safari/iOS */
+}
+
 @media (max-width: 740px) {
   .card-image {
     height: 110px;
   }
-
+  
   .card-wrapper[data-index]:not([data-index="0"]) {
     margin-left: -64px;
   }
-}
-
-.selected-cards {
-  padding: 10px;
-  color: #666;
-}
-
-.card-wrapper.static {
-  cursor: pointer;
+  
+  .cards-group.face-up {
+    margin-left: -64px;
+  }
 }

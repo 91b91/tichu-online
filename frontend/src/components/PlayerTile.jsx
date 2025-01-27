@@ -9,7 +9,7 @@ export function PlayerTile({ user }) {
         <div className="tile-player-name">{user.name}</div>
         {user.isTichu && <div className="tile-tag">Tichu</div>}
       </div>
-      <div className="tile-cards-remaining">{user.hand.length}</div>
+      <div className="tile-cards-remaining">{user.faceUpCardIds.length}</div>
     </div>
   );
 }
