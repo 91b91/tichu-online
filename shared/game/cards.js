@@ -65,3 +65,15 @@ export const DECK_CARDS = [
   { id: 'special-phoenix', suit: 'Special', value: 'Phoenix', rank: 15, points: -25, isFaceUp: true },
   { id: 'special-dragon', suit: 'Special', value: 'Dragon', rank: 16, points: 25, isFaceUp: true }
 ];
+
+export const DECK_CARD_IDS = [
+  'jade-2', 'jade-3', 'jade-4', 'jade-5', 'jade-6', 'jade-7', 'jade-8', 'jade-9', 'jade-10',
+  'jade-J', 'jade-Q', 'jade-K', 'jade-A',
+  'pagoda-2', 'pagoda-3', 'pagoda-4', 'pagoda-5', 'pagoda-6', 'pagoda-7', 'pagoda-8', 'pagoda-9', 'pagoda-10',
+  'pagoda-J', 'pagoda-Q', 'pagoda-K', 'pagoda-A',
+  'star-2', 'star-3', 'star-4', 'star-5', 'star-6', 'star-7', 'star-8', 'star-9', 'star-10',
+  'star-J', 'star-Q', 'star-K', 'star-A',
+  'sword-2', 'sword-3', 'sword-4', 'sword-5', 'sword-6', 'sword-7', 'sword-8', 'sword-9', 'sword-10',
+  'sword-J', 'sword-Q', 'sword-K', 'sword-A',
+  'special-mahjong', 'special-dog', 'special-phoenix', 'special-dragon'
+];

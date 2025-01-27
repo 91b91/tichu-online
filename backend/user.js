@@ -7,11 +7,20 @@ class User {
   isTichu = false;
   isGrandTichu = false;
   progressState = USER_PROGRESS_STATE.IN_LOBBY;
+  passedCardsIds = [];
 
   constructor(name, userId, socketId) {
     this.name = name;
     this.userId = userId;
     this.socketId = socketId;
+  }
+
+  addToPassedCards(cardIds) {
+    if (this.passedCards.length + cards.length > 3) {
+      throw new Error(`Passing cards would exceed ${this.name}'s passed cards maximum capacity`);
+    }
+
+    this.passedCardsIds.concat(cardIds)
   }
 
   getTeam() {
@@ -62,6 +71,9 @@ class User {
   flipCards() {
     this.hand.forEach(card => card.isFaceUp = true);
   }
+
+  
 }
+
 
 export default User;

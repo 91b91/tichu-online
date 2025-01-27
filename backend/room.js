@@ -1,4 +1,5 @@
 import { DECK_CARDS } from '../shared/game/cards.js'
+import { USER_PROGRESS_STATE } from '../shared/game/user-progress.js';
 
 class Room {
   static MAX_CAPACITY = 4;
@@ -51,17 +52,7 @@ class Room {
   }
 
   getUserList() {
-    return this.users.map(user => (
-      {
-        userId: user.userId,
-        name: user.name,
-        team: user.team,
-        isPartyLeader: user.getIsPartyLeader(),
-        isTichu: user.isTichu,
-        hand: user.getHand(),
-        progressState: user.progressState,
-      }
-    ));
+    return this.users;
   }
 
   initializeGame() {
@@ -120,7 +111,7 @@ class Room {
     // Arrange in the desired order [Team 1, Team 2, Team 1, Team 2]
     this.users = [team1[0], team2[0], team1[1], team2[1]];
     return this.users;
-}
+  }
 
   // DO THESE FOLLOWING FUNCTIONS LOOK OK??? 
   addToPlayStack(play) {
@@ -138,6 +129,52 @@ class Room {
 
   getPlayStackJSON() {
     return this.playStack.map((play) => play.toJSON());
+  }
+
+  passCards(userId, cards) {
+    if (cards.length > 1) {
+      throw new Error('You can only pass one card.');
+    }
+  
+    const userPassing = this.getUserByUserId(userId);
+    if (!userPassing) {
+      throw new Error('User not found.');
+    }
+  
+    if (userPassing.progressState === USER_PROGRESS_STATE.PASS_CARDS_TEAMMATE) {
+      this.getTeammate(userId).addToPassedCards(cards);
+      userPassing.removeFromHand(cards);
+    } else if (userPassing.progressState === USER_PROGRESS_STATE.PASS_CARDS_LEFT_OPPONENT) {
+      this.getLeftOpponent(userId).addToPassedCards(cards);
+      userPassing.removeFromHand(cards);
+    } else if (userPassing.progressState === USER_PROGRESS_STATE.PASS_CARDS_RIGHT_OPPONENT) {
+      this.getRightOpponent(userId).addToPassedCards(cards);
+      userPassing.removeFromHand(cards);
+    } else {
+      throw new Error('Invalid progress state for passing cards.');
+    }
+  }
+
+  isPassCardsComplete() {
+    this.users.forEach(user => {
+      if (user.passedCards.length !== 3) return false;
+    });
+    return true;
+  }
+  
+  getTeammate(userId) {
+    const currentUserIndex = userList.findIndex(user => user.userId === userId);
+    return this.users[(currentUserIndex + 2) % 4];
+  }
+
+  getLeftOpponent(userId) {
+    const currentUserIndex = userList.findIndex(user => user.userId === userId);
+    return this.users[(currentUserIndex + 1) % 4];
+  }
+
+  getRightOpponent(userId) {
+    const currentUserIndex = userList.findIndex(user => user.userId === userId);
+    return this.users[(currentUserIndex + 3) % 4];
   }
 }
 

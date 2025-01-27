@@ -3,7 +3,8 @@ import express from 'express';
 import { Server } from 'socket.io';
 import RoomRegistary from './RoomRegistary.js';
 import User from './user.js';
-import Play from './play.js'
+import Play from './play.js';
+import { USER_PROGRESS_STATE } from '../shared/game/user-progress.js';
 
 // TEST SHARED FOLDER IS WORKING
 import { testSharedCode } from '../shared/game/play-validation.js';
@@ -113,10 +114,18 @@ io.on('connection', (socket) => {
     const room = RoomRegistary.getRoomByRoomId(roomId);
     try {
       room.initializeGame(roomId);
+
+      room.getUserList().forEach(user =>
+        user.progressState = USER_PROGRESS_STATE.PASS_CARDS_LEFT_OPPONENT
+      );
+
+      console.log(room.getUserList());
+
       // Update the user list for that room (hands have been updated);
       io.to(room.roomId).emit('userList', {
         users: room.getUserList()
       });
+
       // Alert all users in the room that the game has started
       io.to(room.roomId).emit('startGameSuccess')
     } catch (error) {
@@ -184,7 +193,7 @@ io.on('connection', (socket) => {
     const room = RoomRegistary.getRoomByUserId(userId);
     try {
       const user = room.getUserByUserId(userId);
-      
+
       user.flipCards();
 
       io.to(room.roomId).emit('userList', {
@@ -195,6 +204,27 @@ io.on('connection', (socket) => {
     } catch(error) {
       console.log(error.message);
       socket.emit('flipCardsFailure', error.message);
+    }
+  });
+
+  // ---- PASS CARDS ----
+  socket.on('passCardsRequest', ({ userId, selectedCards }) =>  {
+    const room = RoomRegistary.getRoomByUserId(userId);
+    try {
+      const user = room.getUserByUserId(userId);
+
+      if (user.progressState === USER_PROGRESS_STATE.PASS_CARDS_LEFT_OPPONENT) {
+        room.getUserList()[]
+      }
+
+      io.to(room.roomId).emit('userList', {
+        users: room.getUserList()
+      });
+
+      io.to(room.roomId).emit('passCardsSuccess');
+    } catch(error) {
+      console.log(error.message);
+      socket.emit('passCardsFailure', error.message);
     }
   });
 
